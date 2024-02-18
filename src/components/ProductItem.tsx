@@ -8,7 +8,7 @@ type Props = {
     id: number;
     name: string;
     price: number;
-    img: string;
+    image: string;
 };
 
 function ProductItem(props: Props) {
@@ -26,7 +26,7 @@ function ProductItem(props: Props) {
                     // href="#"
                 >
                     <img
-                        src={props.img}
+                        src={props.image}
                         className="img-fluid product-thumbnail"
                     />
                     <h3 className="product-title">{props.name}</h3>

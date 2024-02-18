@@ -113,7 +113,7 @@ function Shop() {
                                         id={item.id}
                                         name={item.name}
                                         price={item.price}
-                                        img={item.image}
+                                        image={item.image}
                                     />
                                 );
                             })}

@@ -11,7 +11,7 @@ type CartItem = {
     name: string;
     price: number;
     qty: number;
-    img: string;
+    image: string;
 };
 
 type Props = {
@@ -60,7 +60,7 @@ function CartModal(props: Props) {
                                             <tr key={item.id}>
                                                 <td className="align-middle">
                                                     <img
-                                                        src={item.img}
+                                                        src={item.image}
                                                         alt=""
                                                         style={{
                                                             width: "70px",

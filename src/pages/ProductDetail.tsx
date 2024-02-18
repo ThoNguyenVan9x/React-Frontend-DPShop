@@ -3,30 +3,22 @@ import ButtonField from "../components/ButtonField";
 import { useParams } from "react-router-dom";
 import ProductItem from "../components/ProductItem";
 import { formatCurrency } from "../helpers/common";
-
-type Props = {
-    id: number;
-};
-
-// type Props2 = {
-//     id: number;
-//     name: string;
-//     price: number;
-//     img: string;
-// };
+import { useShoppingContext } from "../contexts/ShoppingContext";
 
 function ProductDetail() {
     const { id } = useParams();
     const [product, setProduct] = useState<any>({});
+    const { addCartItem } = useShoppingContext();
 
     useEffect(() => {
         fetch(`http://localhost:8080/api/products/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setProduct(data);
-                console.log(data);
             });
     }, [id]);
+
+    console.log("product: ", product);
 
     return (
         <>
@@ -72,49 +64,13 @@ function ProductDetail() {
                                 &#9734;&#9734;&#9734;&#9734;&#9734;
                             </span>
                         </div>
-                        <div style={{ display: "flex" }}>
+                        <div
+                            style={{ display: "flex" }}
+                            onClick={() => addCartItem(product)}
+                        >
                             <ButtonField>Thêm vào giỏ hàng</ButtonField>
                         </div>
                     </div>
-                    {/* <table>
-                        <tbody>
-                            <tr style={{ marginBottom: ".5rem" }}>
-                                <td>Sản phẩm:</td>
-                                <td>
-                                    <span style={{ fontSize: "24px" }}>
-                                        45 x 58 x 60
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr style={{ marginBottom: ".5rem" }}>
-                                <td>Kích thước:</td>
-                                <td>
-                                    <span style={{ fontSize: "24px" }}>
-                                        45 x 58 x 60
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr style={{ marginBottom: ".5rem" }}>
-                                <td>Giá:</td>
-                                <td>
-                                    <span style={{ fontSize: "24px" }}>
-                                        {formatCurrency(product.price)}
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr style={{ marginBottom: ".5rem" }}>
-                                <td>Đánh giá từ khách hàng:</td>
-                                <td>
-                                    <span style={{ fontSize: "24px" }}>
-                                        &#9734;&#9734;&#9734;&#9734;&#9734;
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <div style={{ display: "flex" }}>
-                            <ButtonField>Thêm vào giỏ hàng</ButtonField>
-                        </div>
-                    </table> */}
                 </div>
             </div>
         </>

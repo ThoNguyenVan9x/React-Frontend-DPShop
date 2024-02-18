@@ -1,6 +1,7 @@
 import React from "react";
 import Hero from "../components/Hero";
 import NavbarShop from "../components/NavbarShop";
+import ProductItem from "../components/ProductItem";
 
 function Home() {
     return (
@@ -30,73 +31,24 @@ function Home() {
                                     </a>
                                 </p>
                             </div>
-                            {/* End Column 1 */}
-                            {/* Start Column 2 */}
-                            <div className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                                <span className="product-item">
-                                    <img
-                                        src="/assets/images/product-1.png"
-                                        className="img-fluid product-thumbnail"
-                                    />
-                                    <h3 className="product-title">
-                                        Nordic Chair
-                                    </h3>
-                                    <strong className="product-price">
-                                        $50.00
-                                    </strong>
-                                    <span className="icon-cross">
-                                        <img
-                                            src="/assets/images/cross.svg"
-                                            className="img-fluid"
-                                        />
-                                    </span>
-                                </span>
-                            </div>
-                            {/* End Column 2 */}
-                            {/* Start Column 3 */}
-                            <div className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                                <a className="product-item" href="cart.html">
-                                    <img
-                                        src="/assets/images/product-2.png"
-                                        className="img-fluid product-thumbnail"
-                                    />
-                                    <h3 className="product-title">
-                                        Kruzo Aero Chair
-                                    </h3>
-                                    <strong className="product-price">
-                                        $78.00
-                                    </strong>
-                                    <span className="icon-cross">
-                                        <img
-                                            src="/assets/images/cross.svg"
-                                            className="img-fluid"
-                                        />
-                                    </span>
-                                </a>
-                            </div>
-                            {/* End Column 3 */}
-                            {/* Start Column 4 */}
-                            <div className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                                <a className="product-item" href="cart.html">
-                                    <img
-                                        src="/assets/images/product-3.png"
-                                        className="img-fluid product-thumbnail"
-                                    />
-                                    <h3 className="product-title">
-                                        Ergonomic Chair
-                                    </h3>
-                                    <strong className="product-price">
-                                        $43.00
-                                    </strong>
-                                    <span className="icon-cross">
-                                        <img
-                                            src="/assets/images/cross.svg"
-                                            className="img-fluid"
-                                        />
-                                    </span>
-                                </a>
-                            </div>
-                            {/* End Column 4 */}
+                            <ProductItem
+                                id={100}
+                                name={"Nordic Chair"}
+                                price={15000000}
+                                image={"/assets/images/product-1.png"}
+                            />
+                            <ProductItem
+                                id={101}
+                                name={"Kruzo Aero Chair"}
+                                price={10000000}
+                                image={"/assets/images/product-2.png"}
+                            />
+                            <ProductItem
+                                id={102}
+                                name={"Ergonomic Chair"}
+                                price={25000000}
+                                image={"/assets/images/product-3.png"}
+                            />
                         </div>
                     </div>
                 </div>
