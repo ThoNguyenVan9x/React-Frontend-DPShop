@@ -1,0 +1,22 @@
+{
+    "products": [
+        {
+            "id": 1,
+            "name": "Ghe sofa 1",
+            "price": 2000000,
+            "img": "./assets/images/product-1.png"
+        },
+        {
+            "id": 2,
+            "name": "Ghe sofa 2",
+            "price": 2200000,
+            "img": "./assets/images/product-2.png"
+        },
+        {
+            "id": 3,
+            "name": "Ghe sofa 3",
+            "price": 2300000,
+            "img": "./assets/images/product-3.png"
+        }
+    ]
+}
