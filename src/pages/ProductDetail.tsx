@@ -22,7 +22,9 @@ function ProductDetail() {
 
     return (
         <>
-            {/* <h1>Trang detail - {id}</h1> */}
+            {/* <div className="container mt-2">
+                
+            </div> */}
 
             <div className="untree_co-section product-section before-footer-section">
                 <div
@@ -46,9 +48,15 @@ function ProductDetail() {
                             </span>
                         </div>
                         <div style={{ marginBottom: "1.5rem" }}>
+                            Chất liệu:&emsp;
+                            <span style={{ fontSize: "24px" }}>
+                                {product.material}
+                            </span>
+                        </div>
+                        <div style={{ marginBottom: "1.5rem" }}>
                             Kích thước:&emsp;
                             <span style={{ fontSize: "24px" }}>
-                                45 x 58 x 60
+                                {product.size}
                             </span>
                         </div>
                         <div style={{ marginBottom: "1.5rem" }}>
@@ -65,10 +73,15 @@ function ProductDetail() {
                             </span>
                         </div>
                         <div
-                            style={{ display: "flex" }}
+                            style={{ display: "flex", gap: "20px" }}
                             onClick={() => addCartItem(product)}
                         >
-                            <ButtonField>Thêm vào giỏ hàng</ButtonField>
+                            <ButtonField onClick={() => window.history.back()}>
+                                Quay lại
+                            </ButtonField>
+                            <ButtonField color="secondary">
+                                Thêm vào giỏ hàng
+                            </ButtonField>
                         </div>
                     </div>
                 </div>

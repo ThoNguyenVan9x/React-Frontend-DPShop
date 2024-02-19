@@ -6,6 +6,7 @@ import NavbarShop from "../components/NavbarShop";
 import ProductItem from "../components/ProductItem";
 import MyPagination from "../components/MyPagination";
 import ButtonField from "../components/ButtonField";
+import { useNavigate } from "react-router-dom";
 
 type ProductItem = {
     id: number;
@@ -22,6 +23,7 @@ function Shop() {
     const [searchType, setSearchType] = useState<string>("SOFA");
     const [searchText, setSearchText] = useState<string>("");
     const searchRef = useRef<any>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // console.log("chay ham fetch");
@@ -91,6 +93,10 @@ function Shop() {
         }, 100);
     };
 
+    const handleAddNewProduct = () => {
+        navigate("/add-product");
+    };
+
     // console.log("Render component");
     // console.log("page: ", page);
     // console.log("searchType ben ngoai: ", searchType);
@@ -102,6 +108,7 @@ function Shop() {
                 <NavbarShop
                     handleFetchData={handleFetchData}
                     handleSearchText={handleSearchText}
+                    handleAddNewProduct={handleAddNewProduct}
                 />
                 <div className="untree_co-section product-section before-footer-section">
                     <div className="container">

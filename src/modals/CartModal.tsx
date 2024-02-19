@@ -5,6 +5,7 @@ import { useShoppingContext } from "../contexts/ShoppingContext";
 import ProductItem from "../components/ProductItem";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../helpers/common";
+import ButtonField from "../components/ButtonField";
 
 type CartItem = {
     id: number;
@@ -158,18 +159,16 @@ function CartModal(props: Props) {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={props.handleClose}>
-                        Đóng
-                    </Button>
-                    <Button
+                    <ButtonField onClick={props.handleClose}>Đóng</ButtonField>
+                    <ButtonField
+                        color="secondary"
                         onClick={() => {
                             props.handleClose();
                             navigate("/checkout");
                         }}
-                        variant="primary"
                     >
                         Thanh toán
-                    </Button>
+                    </ButtonField>
                 </Modal.Footer>
             </Modal>
         </>

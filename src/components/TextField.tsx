@@ -1,22 +1,19 @@
 type Props = {
     placeholder?: string;
+    type?: string;
     value?: string;
     width?: string;
     height?: string;
     onChange?: (value: string) => void;
 };
 
-function TextField({
-    width = "25%",
-    height = "20px",
-    onChange,
-    ...props
-}: Props) {
+function TextField({ type, width, height, onChange, ...props }: Props) {
     return (
         <input
             {...props}
-            className="text-field p-3"
-            style={{ width, height, fontSize: "1rem" }}
+            type={type}
+            className={type === "text" || !type ? "form-control" : "d-block"}
+            style={{ width, height }}
             onChange={(e) => onChange && onChange(e.target.value)}
         />
     );

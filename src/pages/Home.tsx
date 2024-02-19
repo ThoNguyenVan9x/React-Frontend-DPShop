@@ -32,19 +32,19 @@ function Home() {
                                 </p>
                             </div>
                             <ProductItem
-                                id={100}
+                                id={1}
                                 name={"Nordic Chair"}
                                 price={15000000}
                                 image={"/assets/images/product-1.png"}
                             />
                             <ProductItem
-                                id={101}
+                                id={2}
                                 name={"Kruzo Aero Chair"}
                                 price={10000000}
                                 image={"/assets/images/product-2.png"}
                             />
                             <ProductItem
-                                id={102}
+                                id={3}
                                 name={"Ergonomic Chair"}
                                 price={25000000}
                                 image={"/assets/images/product-3.png"}

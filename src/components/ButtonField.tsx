@@ -4,6 +4,7 @@ import { IconSpinner } from "../icons/IconSpinner";
 type Props = {
     loading?: boolean;
     children?: ReactNode;
+    borderRadius?: string;
     color?: "secondary" | "primary";
     onClick?: () => void;
     disabled?: boolean;
@@ -12,6 +13,7 @@ type Props = {
 const ButtonField = ({
     loading,
     children,
+    borderRadius = "30px",
     color = "primary",
     onClick,
     disabled,
@@ -31,6 +33,7 @@ const ButtonField = ({
                         alignItems: "center",
                         columnGap: ".5rem",
                         color: "#fff",
+                        borderRadius: borderRadius,
                     }}
                 >
                     {children}

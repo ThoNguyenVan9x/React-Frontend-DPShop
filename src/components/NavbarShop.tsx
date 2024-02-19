@@ -8,6 +8,7 @@ import ButtonField from "./ButtonField";
 type Props = {
     handleFetchData: (data: string) => void;
     handleSearchText: (data: string) => void;
+    handleAddNewProduct: () => void;
 };
 
 function NavbarShop(props: Props) {
@@ -17,6 +18,10 @@ function NavbarShop(props: Props) {
 
     const handleSearchText = (data: string) => {
         props.handleSearchText(data);
+    };
+
+    const handleAddNewProduct = () => {
+        props.handleAddNewProduct();
     };
 
     return (
@@ -89,7 +94,17 @@ function NavbarShop(props: Props) {
                     <TextField
                         placeholder="Nhập để tìm kiếm"
                         onChange={handleSearchText}
+                        height="40px"
+                        width="300px"
                     />
+                    <div style={{ marginLeft: "50px" }}>
+                        <ButtonField
+                            borderRadius="10px"
+                            onClick={handleAddNewProduct}
+                        >
+                            Add Product
+                        </ButtonField>
+                    </div>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
