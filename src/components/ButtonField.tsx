@@ -5,7 +5,7 @@ type Props = {
     loading?: boolean;
     children?: ReactNode;
     borderRadius?: string;
-    color?: "secondary" | "primary";
+    color?: "secondary" | "primary" | "black";
     onClick?: () => void;
     disabled?: boolean;
 };

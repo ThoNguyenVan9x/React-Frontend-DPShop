@@ -3,9 +3,9 @@ export type Product = {
     name?: string;
     material?: string;
     size?: string;
-    price?: number;
+    price?: string;
     type?: string;
-    // image?: string;
+    image?: string;
 };
 
 export enum FieldProduct {
@@ -15,5 +15,5 @@ export enum FieldProduct {
     Size = "size",
     Price = "price",
     Type = "type",
-    // Image = "image",
+    Image = "image",
 }

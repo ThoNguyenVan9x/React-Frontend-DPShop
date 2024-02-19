@@ -14,6 +14,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ProductDetail from "./pages/ProductDetail";
 import AddProduct from "./pages/AddProduct";
+import EditProduct from "./pages/EditProduct";
 
 function App() {
     return (
@@ -29,6 +30,7 @@ function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/products/:id" element={<ProductDetail />} />
+                <Route path="/products/edit/:id" element={<EditProduct />} />
                 <Route path="/add-product" element={<AddProduct />} />
                 <Route path="/thankyou" element={<Thankyou />} />
             </Routes>

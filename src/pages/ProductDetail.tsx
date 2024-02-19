@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ButtonField from "../components/ButtonField";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ProductItem from "../components/ProductItem";
 import { formatCurrency } from "../helpers/common";
 import { useShoppingContext } from "../contexts/ShoppingContext";
 
 function ProductDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState<any>({});
     const { addCartItem } = useShoppingContext();
 
@@ -73,11 +74,19 @@ function ProductDetail() {
                             </span>
                         </div>
                         <div
-                            style={{ display: "flex", gap: "20px" }}
+                            style={{ display: "flex", gap: "10px" }}
                             onClick={() => addCartItem(product)}
                         >
-                            <ButtonField onClick={() => window.history.back()}>
+                            <ButtonField
+                                color="black"
+                                onClick={() => window.history.back()}
+                            >
                                 Quay lại
+                            </ButtonField>
+                            <ButtonField
+                                onClick={() => navigate(`/products/edit/${id}`)}
+                            >
+                                Chỉnh sửa
                             </ButtonField>
                             <ButtonField color="secondary">
                                 Thêm vào giỏ hàng

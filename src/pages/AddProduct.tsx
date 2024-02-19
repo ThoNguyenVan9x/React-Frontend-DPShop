@@ -44,7 +44,7 @@ function AddProduct() {
         <div>
             <div className="container mt-4">
                 <div>
-                    <h1 className="mb-4">Thêm mới sản phẩm</h1>
+                    <h1 className="mb-4 text-black">Thêm mới sản phẩm</h1>
                     <div className="">
                         <div className="form-group row mb-3">
                             <div className="col-md-12">

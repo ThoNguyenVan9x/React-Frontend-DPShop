@@ -12,7 +12,11 @@ function TextField({ type, width, height, onChange, ...props }: Props) {
         <input
             {...props}
             type={type}
-            className={type === "text" || !type ? "form-control" : "d-block"}
+            className={
+                type === "text" || type === "number" || !type
+                    ? "form-control"
+                    : "d-block"
+            }
             style={{ width, height }}
             onChange={(e) => onChange && onChange(e.target.value)}
         />

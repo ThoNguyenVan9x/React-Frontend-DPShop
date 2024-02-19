@@ -739,7 +739,7 @@ a.more {
 }
 .footer-section .sofa-img {
     position: absolute;
-    top: -200px;
+    top: -100px;
     z-index: 1;
     right: 0;
 }
