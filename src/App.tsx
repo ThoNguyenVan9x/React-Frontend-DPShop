@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import About from "./pages/About";
@@ -15,8 +15,22 @@ import Footer from "./components/Footer";
 import ProductDetail from "./pages/ProductDetail";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
+import { ToastContainer } from "react-toastify";
+import { UserContext } from "./contexts/UserContext";
 
 function App() {
+    const { user, loginContext } = useContext(UserContext);
+    console.log(">>> user: ", user);
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            loginContext(
+                localStorage.getItem("username"),
+                localStorage.getItem("password")
+            );
+        }
+    }, []);
+
     return (
         <>
             <Header />
@@ -35,6 +49,18 @@ function App() {
                 <Route path="/thankyou" element={<Thankyou />} />
             </Routes>
             <Footer />
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover={false}
+                theme="light"
+            />
         </>
     );
 }

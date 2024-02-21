@@ -7,6 +7,7 @@ type Props = {
     borderRadius?: string;
     color?: "secondary" | "primary" | "black";
     onClick?: () => void;
+    width?: string;
     disabled?: boolean;
 };
 
@@ -15,6 +16,7 @@ const ButtonField = ({
     children,
     borderRadius = "30px",
     color = "primary",
+    width,
     onClick,
     disabled,
 }: Props) => {
@@ -30,6 +32,7 @@ const ButtonField = ({
                     className={`btn btn-${color} ${disabled ? "disabled" : ""}`}
                     style={{
                         display: "flex",
+                        width: width,
                         alignItems: "center",
                         columnGap: ".5rem",
                         color: "#fff",

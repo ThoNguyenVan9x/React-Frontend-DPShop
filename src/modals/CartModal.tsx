@@ -31,6 +31,7 @@ function CartModal(props: Props) {
     return (
         <>
             <Modal
+                // fullscreen={true}
                 size="xl"
                 show={props.handleShow()}
                 onHide={props.handleClose}

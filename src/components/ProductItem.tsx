@@ -3,6 +3,7 @@ import React from "react";
 import { useShoppingContext } from "../contexts/ShoppingContext";
 import { formatCurrency } from "../helpers/common";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type Props = {
     id: number;
@@ -40,6 +41,7 @@ function ProductItem(props: Props) {
                             event.stopPropagation();
                             console.log("Add to cart");
                             addCartItem(props);
+                            toast.success("Thêm thành công");
                         }}
                     >
                         <img

@@ -1,20 +1,44 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CartModal from "../modals/CartModal";
 import { useShoppingContext } from "../contexts/ShoppingContext";
+import LoginModal from "../modals/LoginModal";
+import { toast } from "react-toastify";
+import LogoutModal from "../modals/LogoutModal";
+import { UserContext } from "../contexts/UserContext";
 
 function Header() {
     const { pathname } = useLocation();
     const navigate = useNavigate();
-    const [isShowModal, setIsShowModal] = useState(false);
-    const handleShowModal = () => {
-        setIsShowModal(true);
+    const [isShowCartModal, setIsShowCartModal] = useState(false);
+    const [isShowLoginModal, setIsShowLoginModal] = useState(false);
+    const [isShowLogoutModal, setIsShowLogoutModal] = useState(false);
+
+    const token = localStorage.getItem("token");
+    console.log("current token: ", token);
+
+    const handleShowCartModal = () => {
+        setIsShowCartModal(true);
     };
-    const handleCloseModal = () => {
-        setIsShowModal(false);
+    const handleCloseCartModal = () => {
+        setIsShowCartModal(false);
+    };
+    const handleShowLoginModal = () => {
+        setIsShowLoginModal(true);
+    };
+    const handleCloseLoginModal = () => {
+        setIsShowLoginModal(false);
+    };
+    const handleShowLogoutModal = () => {
+        setIsShowLogoutModal(true);
+    };
+    const handleCloseLogoutModal = () => {
+        setIsShowLogoutModal(false);
     };
 
     const { cartItems, cartQty, totalPrice } = useShoppingContext();
+
+    const { user } = useContext(UserContext);
 
     return (
         <div>
@@ -117,16 +141,37 @@ function Header() {
                             </li>
                         </ul>
                         <ul className="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                            <li>
-                                <span className="nav-link">
-                                    <img src="/assets/images/user.svg" />
-                                </span>
-                            </li>
-                            <li style={{ cursor: "pointer" }}>
-                                <span
-                                    className="nav-link "
-                                    onClick={handleShowModal}
+                            {user && user.auth ? (
+                                <li
+                                    style={{ cursor: "pointer" }}
+                                    onClick={handleShowLogoutModal}
                                 >
+                                    <span
+                                        className="nav-link h6 mb-0"
+                                        style={{
+                                            height: "100%",
+                                            lineHeight: "30px",
+                                        }}
+                                    >
+                                        <i className="fa-solid fa-arrow-right-from-bracket"></i>{" "}
+                                        Logout
+                                    </span>
+                                </li>
+                            ) : (
+                                <li
+                                    style={{ cursor: "pointer" }}
+                                    onClick={handleShowLoginModal}
+                                >
+                                    <span className="nav-link">
+                                        <img src="/assets/images/user.svg" />
+                                    </span>
+                                </li>
+                            )}
+                            <li
+                                style={{ cursor: "pointer" }}
+                                onClick={handleShowCartModal}
+                            >
+                                <span className="nav-link ">
                                     <img src="/assets/images/cart.svg" />
                                     <span className="position-absolute start-1 badge badge-pill bg-danger">
                                         {cartQty}
@@ -139,9 +184,17 @@ function Header() {
             </nav>
             {/* End Header/Navigation */}
             <CartModal
-                handleShow={() => isShowModal}
-                handleClose={handleCloseModal}
+                handleShow={() => isShowCartModal}
+                handleClose={handleCloseCartModal}
                 cartItems={cartItems}
+            />
+            <LoginModal
+                handleShow={() => isShowLoginModal}
+                handleClose={handleCloseLoginModal}
+            />
+            <LogoutModal
+                handleShow={() => isShowLogoutModal}
+                handleClose={handleCloseLogoutModal}
             />
         </div>
     );

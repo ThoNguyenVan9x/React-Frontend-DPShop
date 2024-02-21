@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ProductItem from "../components/ProductItem";
 import { formatCurrency } from "../helpers/common";
 import { useShoppingContext } from "../contexts/ShoppingContext";
+import { toast } from "react-toastify";
 
 function ProductDetail() {
     const { id } = useParams();
@@ -73,10 +74,7 @@ function ProductDetail() {
                                 &#9734;&#9734;&#9734;&#9734;&#9734;
                             </span>
                         </div>
-                        <div
-                            style={{ display: "flex", gap: "10px" }}
-                            onClick={() => addCartItem(product)}
-                        >
+                        <div style={{ display: "flex", gap: "10px" }}>
                             <ButtonField
                                 color="black"
                                 onClick={() => window.history.back()}
@@ -88,7 +86,13 @@ function ProductDetail() {
                             >
                                 Chỉnh sửa
                             </ButtonField>
-                            <ButtonField color="secondary">
+                            <ButtonField
+                                color="secondary"
+                                onClick={() => {
+                                    addCartItem(product);
+                                    toast.success("Thêm thành công");
+                                }}
+                            >
                                 Thêm vào giỏ hàng
                             </ButtonField>
                         </div>
