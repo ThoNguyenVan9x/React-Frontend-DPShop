@@ -3,6 +3,7 @@ import TextField from "../components/TextField";
 import ButtonField from "../components/ButtonField";
 import { FieldProduct, Product } from "../models/product.model";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function AddProduct() {
     const [product, setProduct] = useState<Product>({});
@@ -25,24 +26,31 @@ function AddProduct() {
             // !product.image?.trim()
         )
             return;
-        fetch(`http://localhost:8080/api/products`, {
+        fetch(`http://localhost:8080/api/products/add`, {
             method: "POST",
             body: JSON.stringify(product),
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         })
             .then((res) => res.json())
             .then((data) => {
-                if (data?.id) {
-                    navigate("/shop");
+                console.log(data);
+                if (data && data.id) {
+                    toast.success("Add success!");
+                    navigate(`/products/${data.id}`);
                 }
+
+                // if (data?.id) {
+                //     navigate("/shop");
+                // }
             });
     };
 
     return (
         <div>
-            <div className="container mt-4">
+            <div className="container mt-4 mb-5">
                 <div>
                     <h1 className="mb-4 text-black">Thêm mới sản phẩm</h1>
                     <div className="">
@@ -115,6 +123,7 @@ function AddProduct() {
                                     Giá <span className="text-danger">*</span>
                                 </label>
                                 <TextField
+                                    type="number"
                                     width="50%"
                                     onChange={(e) =>
                                         handleChangeFieldProduct(

@@ -141,7 +141,7 @@ function Header() {
                             </li>
                         </ul>
                         <ul className="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                            {user && user.auth ? (
+                            {user && user.role ? (
                                 <li
                                     style={{ cursor: "pointer" }}
                                     onClick={handleShowLogoutModal}

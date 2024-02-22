@@ -4,27 +4,58 @@ type UserContextProviderProps = {
     children: ReactNode;
 };
 
-const UserContext = createContext<any>({ username: "", auth: false });
+type User = {
+    username: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+    role: string;
+    token: string;
+};
+
+const UserContext = createContext<any>({} as User);
 
 const UserContextProvider = ({ children }: UserContextProviderProps) => {
-    const [user, setUser] = useState({ username: "", auth: false });
+    const [user, setUser] = useState<User>({} as User);
 
-    const loginContext = (username: string, token: string) => {
+    const loginContext = (
+        username: string,
+        fullName: string,
+        email: string,
+        phone: string,
+        address: string,
+        role: string,
+        token: string
+    ) => {
         setUser((user) => ({
             username: username,
-            auth: true,
+            fullName: fullName,
+            email: email,
+            phone: phone,
+            address: address,
+            role: role,
+            token: token,
         }));
-        localStorage.setItem("token", token);
+
         localStorage.setItem("username", username);
+        localStorage.setItem("fullName", fullName);
+        localStorage.setItem("email", email);
+        localStorage.setItem("phone", phone);
+        localStorage.setItem("address", address);
+        localStorage.setItem("role", role);
+        localStorage.setItem("token", token);
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
         localStorage.removeItem("username");
-        setUser((user) => ({
-            username: "",
-            auth: false,
-        }));
+        localStorage.removeItem("fullName");
+        localStorage.removeItem("email");
+        localStorage.removeItem("phone");
+        localStorage.removeItem("address");
+        localStorage.removeItem("role");
+        localStorage.removeItem("token");
+        setUser((user) => ({} as User));
     };
 
     return (

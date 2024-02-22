@@ -17,16 +17,22 @@ import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
 import { ToastContainer } from "react-toastify";
 import { UserContext } from "./contexts/UserContext";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
     const { user, loginContext } = useContext(UserContext);
     console.log(">>> user: ", user);
 
     useEffect(() => {
-        if (localStorage.getItem("token")) {
+        if (localStorage.getItem("username")) {
             loginContext(
                 localStorage.getItem("username"),
-                localStorage.getItem("password")
+                localStorage.getItem("fullName"),
+                localStorage.getItem("email"),
+                localStorage.getItem("phone"),
+                localStorage.getItem("address"),
+                localStorage.getItem("role"),
+                localStorage.getItem("token")
             );
         }
     }, []);
@@ -34,20 +40,7 @@ function App() {
     return (
         <>
             <Header />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
-                <Route path="/products/edit/:id" element={<EditProduct />} />
-                <Route path="/add-product" element={<AddProduct />} />
-                <Route path="/thankyou" element={<Thankyou />} />
-            </Routes>
+            <AppRoutes />
             <Footer />
             <ToastContainer
                 position="bottom-right"

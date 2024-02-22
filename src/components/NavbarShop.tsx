@@ -4,6 +4,9 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import TextField from "./TextField";
 import ButtonField from "./ButtonField";
+import { UserContext } from "../contexts/UserContext";
+import { useContext, useState } from "react";
+import { NavLink } from "react-router-dom";
 
 type Props = {
     handleFetchData: (data: string) => void;
@@ -12,6 +15,8 @@ type Props = {
 };
 
 function NavbarShop(props: Props) {
+    const [title, setTitle] = useState<string>("SOFA");
+
     const handleFetchData = (title: string) => {
         props.handleFetchData(title);
     };
@@ -23,6 +28,8 @@ function NavbarShop(props: Props) {
     const handleAddNewProduct = () => {
         props.handleAddNewProduct();
     };
+
+    const { user } = useContext(UserContext);
 
     return (
         <Navbar
@@ -36,41 +43,51 @@ function NavbarShop(props: Props) {
                 <Navbar.Collapse className="" id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link
+                            active={title === "SOFA" ? true : false}
                             className="ps-4 pe-4"
                             onClick={() => {
                                 handleFetchData("SOFA");
+                                setTitle("SOFA");
                             }}
                         >
                             Sofa
                         </Nav.Link>
                         <Nav.Link
+                            active={title === "TABLE" ? true : false}
                             className="ps-4 pe-4"
                             onClick={() => {
                                 handleFetchData("TABLE");
+                                setTitle("TABLE");
                             }}
                         >
                             Bàn
                         </Nav.Link>
                         <Nav.Link
+                            active={title === "CHAIR" ? true : false}
                             className="ps-4 pe-4"
                             onClick={() => {
                                 handleFetchData("CHAIR");
+                                setTitle("CHAIR");
                             }}
                         >
                             Ghế
                         </Nav.Link>
                         <Nav.Link
+                            active={title === "BED" ? true : false}
                             className="ps-4 pe-4"
                             onClick={() => {
                                 handleFetchData("BED");
+                                setTitle("BED");
                             }}
                         >
                             Giường
                         </Nav.Link>
                         <Nav.Link
+                            active={title === "CABINET" ? true : false}
                             className="ps-4 pe-4"
                             onClick={() => {
                                 handleFetchData("CABINET");
+                                setTitle("CABINET");
                             }}
                         >
                             Tủ
@@ -98,12 +115,14 @@ function NavbarShop(props: Props) {
                         width="300px"
                     />
                     <div style={{ marginLeft: "50px" }}>
-                        <ButtonField
-                            borderRadius="10px"
-                            onClick={handleAddNewProduct}
-                        >
-                            Add Product
-                        </ButtonField>
+                        {user && user.role === "ADMIN" && (
+                            <ButtonField
+                                borderRadius="10px"
+                                onClick={handleAddNewProduct}
+                            >
+                                Add Product
+                            </ButtonField>
+                        )}
                     </div>
                 </Navbar.Collapse>
             </Container>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 import Hero from "../components/Hero";
@@ -7,6 +7,7 @@ import ProductItem from "../components/ProductItem";
 import MyPagination from "../components/MyPagination";
 import ButtonField from "../components/ButtonField";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 type ProductItem = {
     id: number;
@@ -34,7 +35,14 @@ function Shop() {
                     console.log("search text = empty ");
 
                     const res = await axios.get(
-                        `http://localhost:8080/api/products?pageIndex=${page}&searchType=${searchType}`
+                        `http://localhost:8080/api/products/list?pageIndex=${page}&searchType=${searchType}`
+                        // {
+                        //     headers: {
+                        //         Authorization: `Bearer ${localStorage.getItem(
+                        //             "token"
+                        //         )}`,
+                        //     },
+                        // }
                     );
                     setTotalPage(res.data.totalPages);
                     // console.log("products trong fetch: ", products);
@@ -46,7 +54,7 @@ function Shop() {
                 } else {
                     console.log("search text has data");
                     const res = await axios.get(
-                        `http://localhost:8080/api/products?pageIndex=${page}&search=${searchText}`
+                        `http://localhost:8080/api/products/list?pageIndex=${page}&search=${searchText}`
                     );
                     setTotalPage(res.data.totalPages);
                     // console.log("products trong fetch: ", products);

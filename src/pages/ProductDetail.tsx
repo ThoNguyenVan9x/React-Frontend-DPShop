@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ButtonField from "../components/ButtonField";
 import { useNavigate, useParams } from "react-router-dom";
 import ProductItem from "../components/ProductItem";
 import { formatCurrency } from "../helpers/common";
 import { useShoppingContext } from "../contexts/ShoppingContext";
 import { toast } from "react-toastify";
+import { UserContext } from "../contexts/UserContext";
 
 function ProductDetail() {
     const { id } = useParams();
@@ -12,8 +13,15 @@ function ProductDetail() {
     const [product, setProduct] = useState<any>({});
     const { addCartItem } = useShoppingContext();
 
+    const { user } = useContext(UserContext);
+
     useEffect(() => {
-        fetch(`http://localhost:8080/api/products/${id}`)
+        fetch(`http://localhost:8080/api/products/detail/${id}`)
+            // {
+            //     headers: {
+            //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+            //     },
+            // })
             .then((res) => res.json())
             .then((data) => {
                 setProduct(data);
@@ -81,11 +89,15 @@ function ProductDetail() {
                             >
                                 Quay lại
                             </ButtonField>
-                            <ButtonField
-                                onClick={() => navigate(`/products/edit/${id}`)}
-                            >
-                                Chỉnh sửa
-                            </ButtonField>
+                            {user && user.role === "ADMIN" && (
+                                <ButtonField
+                                    onClick={() =>
+                                        navigate(`/products/edit/${id}`)
+                                    }
+                                >
+                                    Chỉnh sửa
+                                </ButtonField>
+                            )}
                             <ButtonField
                                 color="secondary"
                                 onClick={() => {

@@ -3,6 +3,8 @@ import ButtonField from "../components/ButtonField";
 import TextField from "../components/TextField";
 import { FieldProduct, Product } from "../models/product.model";
 import { useNavigate, useParams } from "react-router-dom";
+import { productDetailApi } from "../services/ProductServices";
+import { toast } from "react-toastify";
 
 function EditProduct() {
     const [product, setProduct] = useState<Product>({});
@@ -10,11 +12,27 @@ function EditProduct() {
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/products/${id}`)
+        fetch(`http://localhost:8080/api/products/detail/${id}`)
             .then((res) => res.json())
-            .then((data) => {
-                setProduct(data);
+            .then((res) => {
+                console.log("data detail: ", res);
+
+                setProduct(res);
             });
+        // let res = productDetailApi(`${id}`).then((res) => JSON.stringify(res));
+        // {
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem(
+        //             "token"
+        //         )}`,
+        //     },
+        // }
+        // .then((res) => res.json())
+        // .then((res) => {
+        // console.log("detail: ", res);
+
+        // setProduct(res.json);
+        // })
     }, []);
 
     const handleChangeFieldProduct = (key: string, value: string) => {
@@ -34,19 +52,19 @@ function EditProduct() {
             !product.image?.trim()
         )
             return;
-        fetch(`http://localhost:8080/api/products`, {
-            method: "POST",
+        fetch(`http://localhost:8080/api/products/edit`, {
+            method: "PUT",
             body: JSON.stringify(product),
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data?.id) {
-                    navigate("/shop");
-                }
-            });
+        }).then((res) => {
+            if (res.ok) {
+                toast.success("Save product success!");
+                window.history.back();
+            }
+        });
     };
     return (
         <div>

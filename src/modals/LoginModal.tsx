@@ -33,9 +33,17 @@ function LoginModal(props: Props) {
 
         setLoadingAPI(true);
         let res: any = await loginApi(account.username, account.password);
-        if (res && typeof res == "string") {
+        if (res && res.token) {
             console.log("login thanh cong");
-            loginContext(account.username, res);
+            loginContext(
+                res.username,
+                res.fullName,
+                res.email,
+                res.phone,
+                res.address,
+                res.role,
+                res.token
+            );
             setAccount({});
             props.handleClose();
         } else {
@@ -43,20 +51,12 @@ function LoginModal(props: Props) {
             toast.error("Login that bai");
         }
         setLoadingAPI(false);
+    };
 
-        // fetch(`https://reqres.in/api/login`, {
-        //     method: "POST",
-        //     body: JSON.stringify(account),
-        //     headers: {
-        //         "Content-type": "application/json; charset=UTF-8",
-        //     },
-        // }).then((res: any) => console.log(res.json));
-        // .then((data) => {
-        //     if (data) {
-        //         // navigate("/");
-        //         console.log("đăng nhập thành công với Token: ", data);
-        //     }
-        // });
+    const handlePressEnter = (event: any) => {
+        if (event && event.key === "Enter") {
+            handleLogin();
+        }
     };
 
     return (
@@ -92,15 +92,17 @@ function LoginModal(props: Props) {
                                 }
                             />
                             <p className="mt-3 mb-0">Password</p>
-                            <TextField
-                                width="100%"
-                                onChange={(e) =>
-                                    handleChangeFieldAccount(
-                                        FieldAccount.Password,
-                                        e
-                                    )
-                                }
-                            />
+                            <div onKeyDown={(event) => handlePressEnter(event)}>
+                                <TextField
+                                    width="100%"
+                                    onChange={(e) =>
+                                        handleChangeFieldAccount(
+                                            FieldAccount.Password,
+                                            e
+                                        )
+                                    }
+                                />
+                            </div>
                             {/* <div className="mb-5"></div> */}
                             <div
                                 className="d-flex justify-content-between"
