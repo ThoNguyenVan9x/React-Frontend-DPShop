@@ -13,7 +13,10 @@ function TextField({ type, width, height, onChange, ...props }: Props) {
             {...props}
             type={type}
             className={
-                type === "text" || type === "number" || !type
+                type === "text" ||
+                type === "number" ||
+                type === "password" ||
+                !type
                     ? "form-control"
                     : "d-block"
             }

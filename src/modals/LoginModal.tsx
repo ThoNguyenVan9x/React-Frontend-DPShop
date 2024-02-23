@@ -12,6 +12,7 @@ import { UserContext } from "../contexts/UserContext";
 type Props = {
     handleShow: () => boolean;
     handleClose: () => void;
+    handleOpenRegister: () => void;
 };
 
 function LoginModal(props: Props) {
@@ -28,13 +29,17 @@ function LoginModal(props: Props) {
         });
     };
 
+    useEffect(() => {
+        setAccount({});
+    }, [props.handleShow()]);
+
     const handleLogin = async () => {
         if (!account?.username?.trim() || !account.password?.trim()) return;
 
         setLoadingAPI(true);
         let res: any = await loginApi(account.username, account.password);
         if (res && res.token) {
-            console.log("login thanh cong");
+            toast.success("Login success!");
             loginContext(
                 res.username,
                 res.fullName,
@@ -47,7 +52,6 @@ function LoginModal(props: Props) {
             setAccount({});
             props.handleClose();
         } else {
-            console.log("login that bai");
             toast.error("Login that bai");
         }
         setLoadingAPI(false);
@@ -94,6 +98,7 @@ function LoginModal(props: Props) {
                             <p className="mt-3 mb-0">Password</p>
                             <div onKeyDown={(event) => handlePressEnter(event)}>
                                 <TextField
+                                    type="password"
                                     width="100%"
                                     onChange={(e) =>
                                         handleChangeFieldAccount(
@@ -111,7 +116,15 @@ function LoginModal(props: Props) {
                                 <p className="text-center p-4">
                                     Quên mật khẩu?
                                 </p>
-                                <p className="text-center p-4">Đăng ký</p>
+                                <p
+                                    className="text-center p-4"
+                                    onClick={() => {
+                                        props.handleClose();
+                                        props.handleOpenRegister();
+                                    }}
+                                >
+                                    Đăng ký
+                                </p>
                             </div>
                             <button
                                 disabled={

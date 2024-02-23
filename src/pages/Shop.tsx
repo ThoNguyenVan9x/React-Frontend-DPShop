@@ -110,6 +110,8 @@ function Shop() {
     // console.log("searchType ben ngoai: ", searchType);
     // console.log("products ben ngoai: ", products);
 
+    console.log("product list: ", products.length);
+
     return (
         <div>
             <div>
@@ -121,17 +123,23 @@ function Shop() {
                 <div className="untree_co-section product-section before-footer-section">
                     <div className="container">
                         <div className="row">
-                            {products.map((item) => {
-                                return (
-                                    <ProductItem
-                                        key={item.id}
-                                        id={item.id}
-                                        name={item.name}
-                                        price={item.price}
-                                        image={item.image}
-                                    />
-                                );
-                            })}
+                            {products.length === 0 ? (
+                                <h2>Không có sản phẩm.</h2>
+                            ) : (
+                                <>
+                                    {products.map((item) => {
+                                        return (
+                                            <ProductItem
+                                                key={item.id}
+                                                id={item.id}
+                                                name={item.name}
+                                                price={item.price}
+                                                image={item.image}
+                                            />
+                                        );
+                                    })}
+                                </>
+                            )}
                         </div>
                     </div>
                     <div className="d-flex justify-content-center">

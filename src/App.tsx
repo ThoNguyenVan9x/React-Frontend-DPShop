@@ -18,10 +18,14 @@ import EditProduct from "./pages/EditProduct";
 import { ToastContainer } from "react-toastify";
 import { UserContext } from "./contexts/UserContext";
 import AppRoutes from "./routes/AppRoutes";
+import OrderSuccess from "./pages/OrderSuccess";
 
 function App() {
     const { user, loginContext } = useContext(UserContext);
     console.log(">>> user: ", user);
+
+    const path = window.location.pathname;
+    console.log("path: ", path);
 
     useEffect(() => {
         if (localStorage.getItem("username")) {
@@ -39,9 +43,9 @@ function App() {
 
     return (
         <>
-            <Header />
+            {!(path === "/admin") && <Header />}
             <AppRoutes />
-            <Footer />
+            {!(path === "/admin") && <Footer />}
             <ToastContainer
                 position="bottom-right"
                 autoClose={5000}

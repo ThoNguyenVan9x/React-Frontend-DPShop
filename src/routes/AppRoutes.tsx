@@ -14,6 +14,8 @@ import Shop from "../pages/Shop";
 import Thankyou from "../pages/Thankyou";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "./NotFound";
+import OrderSuccess from "../pages/OrderSuccess";
+import Admin from "../pages/Admin";
 
 function AppRoutes() {
     return (
@@ -29,6 +31,8 @@ function AppRoutes() {
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/thankyou" element={<Thankyou />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route
                     path="/add-product"
                     element={
@@ -46,7 +50,6 @@ function AppRoutes() {
                     }
                 />
 
-                {/* <Route path="/thankyou" element={<Thankyou />} /> */}
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </div>

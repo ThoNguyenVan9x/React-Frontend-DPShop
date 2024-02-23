@@ -5,6 +5,7 @@ export type Account = {
     phone?: string;
     address?: string;
     password?: string;
+    rePassword?: string;
     role?: string;
 };
 
@@ -15,5 +16,6 @@ export enum FieldAccount {
     phone = "phone",
     Address = "address",
     Password = "password",
+    RePassword = "rePassword",
     Role = "role",
 }

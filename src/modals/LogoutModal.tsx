@@ -22,7 +22,7 @@ function LogoutModal(props: Props) {
     const { logout } = useContext(UserContext);
     const handleLogout = async () => {
         logout();
-        // localStorage.removeItem("token");
+        toast.success("Logout success!");
         props.handleClose();
         navigate("/");
     };

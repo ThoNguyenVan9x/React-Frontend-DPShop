@@ -6,6 +6,7 @@ import LoginModal from "../modals/LoginModal";
 import { toast } from "react-toastify";
 import LogoutModal from "../modals/LogoutModal";
 import { UserContext } from "../contexts/UserContext";
+import RegisterModal from "../modals/RegisterModal";
 
 function Header() {
     const { pathname } = useLocation();
@@ -13,6 +14,8 @@ function Header() {
     const [isShowCartModal, setIsShowCartModal] = useState(false);
     const [isShowLoginModal, setIsShowLoginModal] = useState(false);
     const [isShowLogoutModal, setIsShowLogoutModal] = useState(false);
+    const [isShowRegisterModal, setIsShowRegisterModal] = useState(false);
+    const [resetTextFieldLogin, setResetTextFieldLogin] = useState(false);
 
     const token = localStorage.getItem("token");
     console.log("current token: ", token);
@@ -23,12 +26,15 @@ function Header() {
     const handleCloseCartModal = () => {
         setIsShowCartModal(false);
     };
+
     const handleShowLoginModal = () => {
+        setIsShowRegisterModal(false);
         setIsShowLoginModal(true);
     };
     const handleCloseLoginModal = () => {
         setIsShowLoginModal(false);
     };
+
     const handleShowLogoutModal = () => {
         setIsShowLogoutModal(true);
     };
@@ -36,9 +42,19 @@ function Header() {
         setIsShowLogoutModal(false);
     };
 
+    const handleShowRegisterModal = () => {
+        setIsShowRegisterModal(true);
+    };
+    const handleCloseRegisterModal = () => {
+        setIsShowRegisterModal(false);
+    };
+
     const { cartItems, cartQty, totalPrice } = useShoppingContext();
 
     const { user } = useContext(UserContext);
+
+    console.log("login: ", isShowLoginModal);
+    console.log("register: ", isShowRegisterModal);
 
     return (
         <div>
@@ -191,10 +207,16 @@ function Header() {
             <LoginModal
                 handleShow={() => isShowLoginModal}
                 handleClose={handleCloseLoginModal}
+                handleOpenRegister={() => handleShowRegisterModal()}
             />
             <LogoutModal
                 handleShow={() => isShowLogoutModal}
                 handleClose={handleCloseLogoutModal}
+            />
+            <RegisterModal
+                handleShow={() => isShowRegisterModal}
+                handleClose={handleCloseRegisterModal}
+                handleOpenLogin={() => handleShowLoginModal()}
             />
         </div>
     );
