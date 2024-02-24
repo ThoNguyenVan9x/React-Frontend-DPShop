@@ -36,15 +36,10 @@ function AddProduct() {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 if (data && data.id) {
                     toast.success("Add success!");
                     navigate(`/products/${data.id}`);
                 }
-
-                // if (data?.id) {
-                //     navigate("/shop");
-                // }
             });
     };
 

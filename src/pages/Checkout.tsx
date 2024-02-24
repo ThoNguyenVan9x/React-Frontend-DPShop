@@ -10,14 +10,6 @@ import { useNavigate } from "react-router-dom";
 function Checkout() {
     const { totalPrice, cartItems, clearCartItem } = useShoppingContext();
     const navigate = useNavigate();
-    // console.log("total price: ", totalPrice);
-    // console.log("cart: ", cartItems);
-
-    // type OrderInfo = {
-    //     order: any;
-    //     customer: any;
-    // };
-
     const [customerInfo, setCustomerInfo] = useState<CustomerInfo>();
     // const [orderInfo, setOrderInfo] = useState<OrderInfo>();
 
@@ -36,10 +28,6 @@ function Checkout() {
     // }, [cartItems, customerInfo]);
 
     const handleOrder = async () => {
-        console.log("chay vao ham handle order");
-
-        console.log("customerInfo full name", customerInfo?.fullName);
-
         if (
             !customerInfo?.fullName?.trim() ||
             !customerInfo?.address?.trim() ||
@@ -47,20 +35,16 @@ function Checkout() {
             !customerInfo.payment?.trim()
         )
             return;
-        console.log("chay xuong day roi");
 
         let res: any = await orderApi({ customerInfo, cartItems });
         if (res) {
-            console.log("đặt hàng thanh cong");
-            toast.success("Đặt hàng thành công!");
+            toast.success("Order success!");
             clearCartItem();
             navigate("/order-success");
         } else {
-            console.log("đặt hàng that bai");
+            toast.error("Order fail!");
         }
     };
-
-    // console.log("customer info: ", customerInfo);
 
     return (
         <div>
@@ -357,8 +341,12 @@ function Checkout() {
                                                             )
                                                         }
                                                     >
+                                                        <option value={""}>
+                                                            -- Chọn phương thức
+                                                            thanh toán --
+                                                        </option>
                                                         <option value={"COD"}>
-                                                            Thanh toán khi giao
+                                                            Thanh toán khi nhận
                                                             hàng
                                                         </option>
                                                         <option value={"MOMO"}>
@@ -375,6 +363,14 @@ function Checkout() {
                                                     <button
                                                         className="btn btn-secondary btn-lg py-3 btn-block"
                                                         onClick={handleOrder}
+                                                        disabled={
+                                                            customerInfo?.fullName &&
+                                                            customerInfo?.address &&
+                                                            customerInfo?.phone &&
+                                                            customerInfo?.payment
+                                                                ? false
+                                                                : true
+                                                        }
                                                     >
                                                         Đặt hàng
                                                     </button>

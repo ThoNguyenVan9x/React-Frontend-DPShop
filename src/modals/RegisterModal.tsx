@@ -29,14 +29,11 @@ function RegisterModal(props: Props) {
     };
 
     useEffect(() => {
-        console.log("handle show register thay doi");
         setRegisterSuccess(false);
         setAccount({});
     }, [props.handleShow()]);
 
     const handleRegister = async () => {
-        console.log("user: ", account);
-
         if (
             !account?.username?.trim() ||
             !account.password?.trim() ||
@@ -54,15 +51,12 @@ function RegisterModal(props: Props) {
         setLoadingAPI(true);
         let res: any = await registerApi(account);
         if (res) {
-            console.log("register response: ", res);
-
-            console.log("register thanh cong");
+            toast.success("Register success");
             setRegisterSuccess(true);
             setAccount({});
             // props.handleClose();
         } else {
-            console.log("register that bai");
-            toast.error("Register that bai");
+            toast.error("Have an error!");
         }
         setLoadingAPI(false);
     };

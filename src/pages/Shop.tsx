@@ -8,6 +8,7 @@ import MyPagination from "../components/MyPagination";
 import ButtonField from "../components/ButtonField";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
+import { productListApi } from "../services/ProductServices";
 
 type ProductItem = {
     id: number;
@@ -20,49 +21,31 @@ function Shop() {
     const [products, setProducts] = useState<ProductItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(8);
     const [totalPage, setTotalPage] = useState<number>(0);
-    const [searchType, setSearchType] = useState<string>("SOFA");
+    const [searchType, setSearchType] = useState<string>("");
     const [searchText, setSearchText] = useState<string>("");
     const searchRef = useRef<any>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log("chay ham fetch");
+        if (searchText !== "") {
+            setSearchType("");
+        }
 
         const fetchProductsType = async () => {
             try {
-                if (searchText === "") {
-                    console.log("search text = empty ");
-
-                    const res = await axios.get(
-                        `http://localhost:8080/api/products/list?pageIndex=${page}&searchType=${searchType}`
-                        // {
-                        //     headers: {
-                        //         Authorization: `Bearer ${localStorage.getItem(
-                        //             "token"
-                        //         )}`,
-                        //     },
-                        // }
-                    );
-                    setTotalPage(res.data.totalPages);
-                    // console.log("products trong fetch: ", products);
-                    if (products.length > 0 && page > 0) {
-                        setProducts([...products, ...res.data.content]);
-                    } else {
-                        setProducts(res.data.content);
-                    }
+                const res: any = await productListApi(
+                    page,
+                    pageSize,
+                    searchText,
+                    searchType
+                );
+                setTotalPage(res.totalPages);
+                if (products.length > 0 && page > 0) {
+                    setProducts([...products, ...res.content]);
                 } else {
-                    console.log("search text has data");
-                    const res = await axios.get(
-                        `http://localhost:8080/api/products/list?pageIndex=${page}&search=${searchText}`
-                    );
-                    setTotalPage(res.data.totalPages);
-                    // console.log("products trong fetch: ", products);
-                    if (products.length > 0 && page > 0) {
-                        setProducts([...products, ...res.data.content]);
-                    } else {
-                        setProducts(res.data.content);
-                    }
+                    setProducts(res.content);
                 }
             } catch (error) {
                 console.log("error: ", error);
@@ -72,10 +55,6 @@ function Shop() {
     }, [page, searchType, searchText]);
 
     const handleShowMore = () => {
-        // console.log("handle show more");
-        // console.log("page: ", page);
-        // console.log("total page: ", totalPage);
-
         if (page < totalPage - 1) {
             setPage(page + 1);
             setIsLoading(true);
@@ -83,17 +62,11 @@ function Shop() {
     };
 
     const handleFetchData = (data: string) => {
-        // console.log("handle fetch data");
-        // console.log("data title : ", data);
-        // console.log("search type ben trong handle fetch data: ", searchType);
-
         setSearchType(data);
         setPage(0);
     };
 
     const handleSearchText = (value: string) => {
-        console.log("handle search text");
-
         clearTimeout(searchRef.current!);
         searchRef.current = setTimeout(() => {
             setPage(0);
@@ -104,13 +77,6 @@ function Shop() {
     const handleAddNewProduct = () => {
         navigate("/add-product");
     };
-
-    // console.log("Render component");
-    // console.log("page: ", page);
-    // console.log("searchType ben ngoai: ", searchType);
-    // console.log("products ben ngoai: ", products);
-
-    console.log("product list: ", products.length);
 
     return (
         <div>

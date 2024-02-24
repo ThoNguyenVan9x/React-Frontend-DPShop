@@ -1,7 +1,7 @@
 type Props = {
     placeholder?: string;
     type?: string;
-    value?: string;
+    value?: any;
     width?: string;
     height?: string;
     onChange?: (value: string) => void;

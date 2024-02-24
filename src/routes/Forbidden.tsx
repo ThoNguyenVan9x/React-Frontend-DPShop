@@ -1,13 +1,13 @@
 import React from "react";
 import { Alert } from "react-bootstrap";
 
-function NotFound() {
+function Forbidden() {
     return (
         <div>
-            <Alert variant="warning" className="mt-5 mb-5">
+            <Alert variant="danger" className="mt-5 mb-5">
                 <div className="container">
-                    <Alert.Heading>Not Found 404!</Alert.Heading>
-                    <p>Trang web không tồn tại.</p>
+                    <Alert.Heading>Forbidden 403!</Alert.Heading>
+                    <p>Bạn không được cấp quyền truy cập vào trang này.</p>
                 </div>
             </Alert>
             <div className="d-flex justify-content-center  mb-5">
@@ -21,4 +21,4 @@ function NotFound() {
     );
 }
 
-export default NotFound;
+export default Forbidden;

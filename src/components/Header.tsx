@@ -18,7 +18,6 @@ function Header() {
     const [resetTextFieldLogin, setResetTextFieldLogin] = useState(false);
 
     const token = localStorage.getItem("token");
-    console.log("current token: ", token);
 
     const handleShowCartModal = () => {
         setIsShowCartModal(true);
@@ -53,9 +52,6 @@ function Header() {
 
     const { user } = useContext(UserContext);
 
-    console.log("login: ", isShowLoginModal);
-    console.log("register: ", isShowRegisterModal);
-
     return (
         <div>
             {/* Start Header/Navigation */}
@@ -68,7 +64,8 @@ function Header() {
                         className="navbar-brand"
                         onClick={() => navigate("/")}
                     >
-                        DP-Shop<span>.</span>
+                        <i className="fa-solid fa-warehouse"></i> D-Shop
+                        <span>.</span>
                     </span>
                     <button
                         className="navbar-toggler"
@@ -183,17 +180,31 @@ function Header() {
                                     </span>
                                 </li>
                             )}
-                            <li
-                                style={{ cursor: "pointer" }}
-                                onClick={handleShowCartModal}
-                            >
-                                <span className="nav-link ">
-                                    <img src="/assets/images/cart.svg" />
-                                    <span className="position-absolute start-1 badge badge-pill bg-danger">
-                                        {cartQty}
+                            {user && user.role === "ADMIN" ? (
+                                <li
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => navigate("/admin")}
+                                >
+                                    <span className="nav-link ">
+                                        <i className="fa-solid fa-user-tie"></i>
+                                        <span className="position-absolute start-1 badge badge-pill bg-danger">
+                                            ADMIN
+                                        </span>
                                     </span>
-                                </span>
-                            </li>
+                                </li>
+                            ) : (
+                                <li
+                                    style={{ cursor: "pointer" }}
+                                    onClick={handleShowCartModal}
+                                >
+                                    <span className="nav-link ">
+                                        <img src="/assets/images/cart.svg" />
+                                        <span className="position-absolute start-1 badge badge-pill bg-danger">
+                                            {cartQty}
+                                        </span>
+                                    </span>
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>

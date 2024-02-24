@@ -6,7 +6,7 @@ function OrderSuccess() {
     const navigate = useNavigate();
     return (
         <div>
-            <Alert variant="success" className="mt-5 mb-5">
+            <Alert variant="success" className="mt-5 mb-4">
                 <div className="container">
                     <Alert.Heading>Đặt hàng thành công!</Alert.Heading>
                     <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
@@ -16,7 +16,7 @@ function OrderSuccess() {
                     </p>
                 </div>
             </Alert>
-            <div className="d-flex justify-content-center p-3 gap-4">
+            <div className="d-flex justify-content-center p-3 gap-4 mb-4">
                 <button
                     className="btn btn-primary"
                     onClick={() => navigate("/")}

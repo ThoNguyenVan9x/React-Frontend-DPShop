@@ -15,7 +15,7 @@ type Props = {
 };
 
 function NavbarShop(props: Props) {
-    const [title, setTitle] = useState<string>("SOFA");
+    const [title, setTitle] = useState<string>("");
 
     const handleFetchData = (title: string) => {
         props.handleFetchData(title);

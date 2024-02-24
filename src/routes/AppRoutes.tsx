@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import About from "../pages/About";
@@ -15,9 +15,17 @@ import Thankyou from "../pages/Thankyou";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "./NotFound";
 import OrderSuccess from "../pages/OrderSuccess";
-import Admin from "../pages/Admin";
+import Admin from "../pages/admin/Admin";
+import { UserContext } from "../contexts/UserContext";
+import Forbidden from "./Forbidden";
+import Products from "../pages/admin/Products";
+import Orders from "../pages/admin/Orders";
+import Accounts from "../pages/admin/Accounts";
 
 function AppRoutes() {
+    const { user } = useContext(UserContext);
+    const path = window.location.pathname;
+
     return (
         <div>
             <Routes>
@@ -32,23 +40,25 @@ function AppRoutes() {
                 <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/thankyou" element={<Thankyou />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
-                <Route path="/admin" element={<Admin />} />
-                <Route
-                    path="/add-product"
-                    element={
-                        <PrivateRoute>
-                            <AddProduct />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/products/edit/:id"
-                    element={
-                        <PrivateRoute>
-                            <EditProduct />
-                        </PrivateRoute>
-                    }
-                />
+
+                {user.role !== "ADMIN" &&
+                (path.includes("/add-product") ||
+                    path.includes("/products/edit") ||
+                    path.includes("/admin")) ? (
+                    <Route path="*" element={<Forbidden />} />
+                ) : (
+                    <>
+                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/add-product" element={<AddProduct />} />
+                        <Route
+                            path="/products/edit/:id"
+                            element={<EditProduct />}
+                        />
+                        <Route path="/admin/products" element={<Products />} />
+                        <Route path="/admin/orders" element={<Orders />} />
+                        <Route path="/admin/accounts" element={<Accounts />} />
+                    </>
+                )}
 
                 <Route path="*" element={<NotFound />} />
             </Routes>

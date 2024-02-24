@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Alert } from "react-bootstrap";
 
 function PrivateRoute(props: any) {
     console.log(">>> props: ", props);
+
+    const navigate = useNavigate();
 
     const { user } = useContext(UserContext);
 
@@ -17,6 +19,13 @@ function PrivateRoute(props: any) {
                         <p>Bạn không được cấp quyền truy cập vào trang này.</p>
                     </div>
                 </Alert>
+                <div className="d-flex justify-content-center  mb-5">
+                    <a href="/">
+                        <button className="btn btn-primary">
+                            Quay về trang chủ
+                        </button>
+                    </a>
+                </div>
             </div>
         );
     }
