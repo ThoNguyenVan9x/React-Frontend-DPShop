@@ -15,11 +15,56 @@ type Props = {
     handleShow: () => boolean;
     handleClose: () => void;
     handleRefreshList: () => void;
+    isFetchData: boolean;
+    productId: any;
 };
 
-function AddProductModal(props: Props) {
+function EditProductModal(props: Props) {
     const navigate = useNavigate();
     const [product, setProduct] = useState<Product>({});
+
+    useEffect(() => {
+        if (props.isFetchData == true) {
+            try {
+                const fetchData = async () => {
+                    let res = await fetch(
+                        `http://localhost:8080/api/products/detail/${props.productId}`
+                    )
+                        .then((data) =>
+                            data.status === 200 ? data.json() : data
+                        )
+                        .then((data) => {
+                            console.log(data);
+                            setProduct(data);
+                        });
+                };
+                fetchData();
+            } catch (error) {
+                console.log("error: ", error);
+            }
+        }
+
+        // .then((res) => res.json())
+        // .then((res) => {
+        //     console.log("data detail: ", res);
+
+        //     setProduct(res);
+        // });
+        // let res = productDetailApi(`${id}`).then((res) => JSON.stringify(res));
+        // {
+        //     headers: {
+        //         Authorization: `Bearer ${localStorage.getItem(
+        //             "token"
+        //         )}`,
+        //     },
+        // }
+        // .then((res) => res.json())
+        // .then((res) => {
+        // console.log("detail: ", res);
+
+        // setProduct(res.json);
+        // })
+    }, [props.isFetchData]);
 
     const handleChangeFieldProduct = (key: string, value: any) => {
         setProduct({
@@ -28,32 +73,29 @@ function AddProductModal(props: Props) {
         });
     };
 
-    const handleAddNewProduct = async () => {
+    const handleEditProduct = () => {
         if (
             !product.name?.trim() ||
             !product.material?.trim() ||
             !product.size?.trim() ||
-            !product.type?.trim() ||
-            !product.price
+            !product.price ||
+            !product.type?.trim()
         )
             return;
-        fetch(`http://localhost:8080/api/products/add`, {
-            method: "POST",
+        fetch(`http://localhost:8080/api/products/edit`, {
+            method: "PUT",
             body: JSON.stringify(product),
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data && data.id) {
-                    setProduct({});
-                    props.handleRefreshList();
-                    props.handleClose();
-                    toast.success("Add success!");
-                }
-            });
+        }).then((res) => {
+            if (res.ok) {
+                props.handleRefreshList();
+                toast.success("Save product success!");
+                props.handleClose();
+            }
+        });
     };
 
     useEffect(() => {
@@ -72,7 +114,7 @@ function AddProductModal(props: Props) {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="example-modal-sizes-title-lg">
-                        Add new Product
+                        Edit Product
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -86,6 +128,7 @@ function AddProductModal(props: Props) {
                                     </span>
                                     <TextField
                                         width="100%"
+                                        value={product.name}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
                                                 FieldProduct.Name,
@@ -99,6 +142,7 @@ function AddProductModal(props: Props) {
                                     </span>
                                     <TextField
                                         width="100%"
+                                        value={product.material}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
                                                 FieldProduct.Material,
@@ -112,9 +156,25 @@ function AddProductModal(props: Props) {
                                     </span>
                                     <TextField
                                         width="100%"
+                                        value={product.size}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
                                                 FieldProduct.Size,
+                                                e
+                                            )
+                                        }
+                                    />
+                                    <span>
+                                        Price{" "}
+                                        <span className="text-danger">*</span>
+                                    </span>
+                                    <TextField
+                                        type="number"
+                                        width="100%"
+                                        value={product.price}
+                                        onChange={(e) =>
+                                            handleChangeFieldProduct(
+                                                FieldProduct.Price,
                                                 e
                                             )
                                         }
@@ -129,6 +189,7 @@ function AddProductModal(props: Props) {
                                         <select
                                             id="c_country"
                                             className="form-control"
+                                            value={product.type}
                                             onChange={(e) =>
                                                 handleChangeFieldProduct(
                                                     FieldProduct.Type,
@@ -156,15 +217,16 @@ function AddProductModal(props: Props) {
 
                                 <div className="w-100">
                                     <span>
-                                        Price{" "}
+                                        Count in Stock{" "}
                                         <span className="text-danger">*</span>
                                     </span>
                                     <TextField
                                         type="number"
                                         width="100%"
+                                        value={product.countInStock}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
-                                                FieldProduct.Price,
+                                                FieldProduct.CountInStock,
                                                 e
                                             )
                                         }
@@ -176,6 +238,7 @@ function AddProductModal(props: Props) {
                                     <TextField
                                         type="number"
                                         width="100%"
+                                        value={product.discount}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
                                                 FieldProduct.Discount,
@@ -188,6 +251,7 @@ function AddProductModal(props: Props) {
                                     <TextField
                                         type="number"
                                         width="100%"
+                                        value={product.rating}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
                                                 FieldProduct.Rating,
@@ -199,11 +263,7 @@ function AddProductModal(props: Props) {
                                         Image{" "}
                                         <span className="text-danger">*</span>
                                     </span>
-                                    <input
-                                        type="file"
-                                        // multiple
-                                        accept="image/*"
-                                    />
+                                    <input type="file" />
                                 </div>
                             </div>
                             <div className="mb-5"></div>
@@ -216,7 +276,7 @@ function AddProductModal(props: Props) {
                                 </button>
                                 <button
                                     className="btn btn-secondary"
-                                    onClick={() => handleAddNewProduct()}
+                                    onClick={() => handleEditProduct()}
                                     disabled={
                                         product?.name &&
                                         product?.material &&
@@ -227,7 +287,7 @@ function AddProductModal(props: Props) {
                                             : true
                                     }
                                 >
-                                    Add new
+                                    Update
                                 </button>
                             </div>
 
@@ -268,4 +328,4 @@ function AddProductModal(props: Props) {
     );
 }
 
-export default AddProductModal;
+export default EditProductModal;

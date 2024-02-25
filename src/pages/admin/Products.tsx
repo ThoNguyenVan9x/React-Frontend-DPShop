@@ -4,6 +4,9 @@ import Sidbar from "../../components/admin/Sidbar";
 import { Pagination, Table } from "react-bootstrap";
 import { productListApi } from "../../services/ProductServices";
 import AddProductModal from "../../modals/AddProductModal";
+import { formatCurrency } from "../../helpers/common";
+import DeleteProductModal from "../../modals/DeleteProductModal";
+import EditProductModal from "../../modals/EditProductModal";
 
 type ProductItem = {
     id: number;
@@ -11,19 +14,25 @@ type ProductItem = {
     material: string;
     size: string;
     price: number;
+    countInStock: number;
     image: string;
 };
 
 function Products() {
     const [refreshList, setRefreshList] = useState(false);
+    const [isFetchData, setIsFetchData] = useState(false);
 
     const [searchText, setSearchText] = useState<string>("");
     const [searchType, setSearchType] = useState<string>("");
     const [pageIndex, setPageIndex] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(7);
     const [totalPage, setTotalPage] = useState<number>(0);
+    const [productId, setProductId] = useState<number>();
+    const [productName, setProductName] = useState<string>();
 
     const [isShowAddProduct, setIsShowAddProduct] = useState(false);
+    const [isShowDeleteProduct, setIsShowDeleteProduct] = useState(false);
+    const [isShowEditProduct, setIsShowEditProduct] = useState(false);
 
     const [productList, setProductList] = useState<ProductItem[]>([]);
 
@@ -32,6 +41,21 @@ function Products() {
     };
     const handleCloseAddProduct = () => {
         setIsShowAddProduct(false);
+    };
+
+    const handleShowDeleteProduct = () => {
+        setIsShowDeleteProduct(true);
+    };
+    const handleCloseDeleteProduct = () => {
+        setIsShowDeleteProduct(false);
+    };
+
+    const handleShowEditProduct = () => {
+        setIsShowEditProduct(true);
+    };
+    const handleCloseEditProduct = () => {
+        setIsFetchData(false);
+        setIsShowEditProduct(false);
     };
 
     const handleRefreshList = () => {
@@ -46,6 +70,7 @@ function Products() {
                 searchText,
                 searchType
             );
+
             if (res) {
                 setTotalPage(res.totalPages);
                 setProductList([...res.content]);
@@ -111,7 +136,9 @@ function Products() {
                                                     <th>Material</th>
                                                     <th>Size</th>
                                                     <th>Price</th>
+                                                    <th>Count in stock</th>
                                                     <th>Image</th>
+                                                    <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -119,18 +146,63 @@ function Products() {
                                                     return (
                                                         <tr key={item.id}>
                                                             <td>{item.id}</td>
-                                                            <td>{item.name}</td>
+                                                            <td
+                                                                style={{
+                                                                    cursor: "pointer",
+                                                                }}
+                                                                onClick={() => {
+                                                                    setProductId(
+                                                                        item.id
+                                                                    );
+                                                                    setIsShowEditProduct(
+                                                                        true
+                                                                    );
+                                                                    setIsFetchData(
+                                                                        true
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {item.name}
+                                                            </td>
                                                             <td>
                                                                 {item.material}
                                                             </td>
+                                                            <td>{item.size}</td>
                                                             <td>
-                                                                @{item.size}
+                                                                {formatCurrency(
+                                                                    item.price
+                                                                )}
                                                             </td>
                                                             <td>
-                                                                @{item.price}
+                                                                {
+                                                                    item.countInStock
+                                                                }
                                                             </td>
                                                             <td>
                                                                 @{item.image}
+                                                            </td>
+                                                            <td>
+                                                                <div
+                                                                    className="d-flex gap-3"
+                                                                    style={{
+                                                                        cursor: "pointer",
+                                                                        fontSize:
+                                                                            "1.2rem",
+                                                                    }}
+                                                                    onClick={() => {
+                                                                        setProductId(
+                                                                            item.id
+                                                                        );
+                                                                        setProductName(
+                                                                            item.name
+                                                                        );
+                                                                        setIsShowDeleteProduct(
+                                                                            true
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    <i className="fa-solid fa-trash-can" />
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     );
@@ -166,6 +238,20 @@ function Products() {
                 handleShow={() => isShowAddProduct}
                 handleClose={() => handleCloseAddProduct()}
                 handleRefreshList={() => handleRefreshList()}
+            />
+            <DeleteProductModal
+                handleShow={() => isShowDeleteProduct}
+                handleClose={() => handleCloseDeleteProduct()}
+                handleRefreshList={() => handleRefreshList()}
+                productId={productId}
+                productName={productName}
+            />
+            <EditProductModal
+                handleShow={() => isShowEditProduct}
+                handleClose={() => handleCloseEditProduct()}
+                handleRefreshList={() => handleRefreshList()}
+                productId={productId}
+                isFetchData={isFetchData}
             />
         </>
     );

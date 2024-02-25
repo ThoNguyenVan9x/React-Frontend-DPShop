@@ -42,7 +42,7 @@ function EditProduct() {
         });
     };
 
-    const handleAddNewProduct = () => {
+    const handleEditProduct = () => {
         if (
             !product.name?.trim() ||
             !product.material?.trim() ||
@@ -72,136 +72,217 @@ function EditProduct() {
                 <div>
                     <h1 className="mb-4 text-black">Chỉnh sửa sản phẩm</h1>
                     <div className="d-flex justify-content-between gap-5">
-                        <div className="w-50">
-                            <div className="form-group row mb-3">
-                                <div className="col-md-12">
+                        <div className="w-50 d-flex gap-3">
+                            <div className="w-50">
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Tên sản phẩm{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            // width="90%"
+                                            value={product.name}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.Name,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Chất liệu{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            value={product.material}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.Material,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Kích thước (Dài x Rộng x Cao)
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            value={product.size}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.Size,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Giá{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            type="number"
+                                            value={product.price}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.Price,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group mb-3">
                                     <label
-                                        htmlFor="c_companyname"
+                                        htmlFor="c_country"
                                         className="text-black"
                                     >
-                                        Tên sản phẩm{" "}
+                                        Phân loại{" "}
                                         <span className="text-danger">*</span>
                                     </label>
-                                    <TextField
-                                        // width="90%"
-                                        value={product.name}
+                                    <select
+                                        id="c_country"
+                                        className="form-control"
+                                        value={product.type}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
-                                                FieldProduct.Name,
-                                                e
+                                                FieldProduct.Type,
+                                                e.target.value
                                             )
                                         }
-                                    />
+                                    >
+                                        <option value="">
+                                            -- Chọn phân loại --
+                                        </option>
+                                        <option value={"SOFA"}>Sofa</option>
+                                        <option value={"TABLE"}>Bàn</option>
+                                        <option value={"CHAIR"}>Ghế</option>
+                                        <option value={"BED"}>Giường</option>
+                                        <option value={"CABINET"}>Tủ</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div className="form-group row mb-3">
-                                <div className="col-md-12">
-                                    <label
-                                        htmlFor="c_companyname"
-                                        className="text-black"
-                                    >
-                                        Chất liệu{" "}
-                                        <span className="text-danger">*</span>
-                                    </label>
-                                    <TextField
-                                        value={product.material}
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Material,
-                                                e
-                                            )
-                                        }
-                                    />
+                            <div className="w-50">
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Discount(%){" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            value={product.discount}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.Discount,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group row mb-3">
-                                <div className="col-md-12">
-                                    <label
-                                        htmlFor="c_companyname"
-                                        className="text-black"
-                                    >
-                                        Kích thước (Dài x Rộng x Cao)
-                                        <span className="text-danger">*</span>
-                                    </label>
-                                    <TextField
-                                        value={product.size}
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Size,
-                                                e
-                                            )
-                                        }
-                                    />
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Count in Stock
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            value={product.countInStock}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.CountInStock,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group row mb-3">
-                                <div className="col-md-12">
-                                    <label
-                                        htmlFor="c_companyname"
-                                        className="text-black"
-                                    >
-                                        Giá{" "}
-                                        <span className="text-danger">*</span>
-                                    </label>
-                                    <TextField
-                                        type="number"
-                                        value={product.price}
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Price,
-                                                e
-                                            )
-                                        }
-                                    />
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Rating{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            type="number"
+                                            value={product.rating}
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProduct.Rating,
+                                                    e
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="form-group mb-3">
-                                <label
-                                    htmlFor="c_country"
-                                    className="text-black"
-                                >
-                                    Phân loại{" "}
-                                    <span className="text-danger">*</span>
-                                </label>
-                                <select
-                                    id="c_country"
-                                    className="form-control"
-                                    value={product.type}
-                                    onChange={(e) =>
-                                        handleChangeFieldProduct(
-                                            FieldProduct.Type,
-                                            e.target.value
-                                        )
-                                    }
-                                >
-                                    <option value="">
-                                        -- Chọn phân loại --
-                                    </option>
-                                    <option value={"SOFA"}>Sofa</option>
-                                    <option value={"TABLE"}>Bàn</option>
-                                    <option value={"CHAIR"}>Ghế</option>
-                                    <option value={"BED"}>Giường</option>
-                                    <option value={"CABINET"}>Tủ</option>
-                                </select>
-                            </div>
-                            <div className="form-group row mb-5">
-                                <div className="col-md-12">
-                                    <label
-                                        htmlFor="c_companyname"
-                                        className="text-black"
-                                    >
-                                        Ảnh{" "}
-                                        <span className="text-danger">*</span>
-                                    </label>
-                                    <TextField
-                                        type="file"
-                                        // onChange={(e) =>
-                                        //     handleChangeFieldProduct(
-                                        //         FieldProduct.Image,
-                                        //         e
-                                        //     )
-                                        // }
-                                    />
+                                <div className="form-group row mb-5">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Ảnh{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            type="file"
+                                            // onChange={(e) =>
+                                            //     handleChangeFieldProduct(
+                                            //         FieldProduct.Image,
+                                            //         e
+                                            //     )
+                                            // }
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -215,7 +296,7 @@ function EditProduct() {
                             Quay lại
                         </ButtonField>
                         <ButtonField
-                            onClick={handleAddNewProduct}
+                            onClick={handleEditProduct}
                             disabled={
                                 !product.name?.trim() ||
                                 !product.material?.trim() ||

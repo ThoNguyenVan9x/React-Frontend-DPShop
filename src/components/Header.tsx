@@ -180,30 +180,34 @@ function Header() {
                                     </span>
                                 </li>
                             )}
-                            {user && user.role === "ADMIN" ? (
-                                <li
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => navigate("/admin")}
-                                >
-                                    <span className="nav-link ">
-                                        <i className="fa-solid fa-user-tie"></i>
-                                        <span className="position-absolute start-1 badge badge-pill bg-danger">
-                                            ADMIN
-                                        </span>
+                            <li
+                                style={{
+                                    cursor: "pointer",
+                                    marginRight: "30px",
+                                }}
+                                onClick={handleShowCartModal}
+                            >
+                                <span className="nav-link ">
+                                    <img src="/assets/images/cart.svg" />
+                                    <span className="position-absolute start-1 badge badge-pill bg-danger">
+                                        {cartQty}
                                     </span>
-                                </li>
-                            ) : (
-                                <li
-                                    style={{ cursor: "pointer" }}
-                                    onClick={handleShowCartModal}
-                                >
-                                    <span className="nav-link ">
-                                        <img src="/assets/images/cart.svg" />
-                                        <span className="position-absolute start-1 badge badge-pill bg-danger">
-                                            {cartQty}
+                                </span>
+                            </li>
+                            {user && user.role === "ADMIN" && (
+                                <a href="/admin">
+                                    <li
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => navigate("/admin")}
+                                    >
+                                        <span className="nav-link ">
+                                            <i className="fa-solid fa-user-tie"></i>
+                                            <span className="position-absolute start-1 badge badge-pill bg-danger">
+                                                AD
+                                            </span>
                                         </span>
-                                    </span>
-                                </li>
+                                    </li>
+                                </a>
                             )}
                         </ul>
                     </div>
