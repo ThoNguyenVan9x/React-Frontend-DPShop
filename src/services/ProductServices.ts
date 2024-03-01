@@ -2,13 +2,13 @@ import { Product } from "../models/product.model";
 import axios from "../services/customize-axios";
 
 const productListApi = (
-    pageIndex: number,
-    pageSize: number,
-    searchText: string,
-    searchType: string
+    page: number,
+    limit: number,
+    categoryId: number,
+    keyword: string
 ) => {
     return axios.get(
-        `/api/products/list?pageIndex=${pageIndex}&pageSize=${pageSize}&searchText=${searchText}&searchType=${searchType}`
+        `/api/v1/products?page=${page}&limit=${limit}&category_id=${categoryId}&keyword=${keyword}`
     );
 };
 
@@ -20,4 +20,8 @@ const productAddApi = (data: any) => {
     return axios.get(`/api/products/add`, { data });
 };
 
-export { productDetailApi, productListApi, productAddApi };
+const imageProductApi = (data: any) => {
+    return axios.get(`/api/v1/products/images/${data}`);
+};
+
+export { productDetailApi, productListApi, productAddApi, imageProductApi };

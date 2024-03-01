@@ -1,32 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../../components/admin/Navbar";
-import Sidbar from "../../components/admin/Sidbar";
+import Sidbar from "../../components/admin/Sidebar";
 import { Pagination, Table } from "react-bootstrap";
 import { productListApi } from "../../services/ProductServices";
 import AddProductModal from "../../modals/AddProductModal";
 import { formatCurrency } from "../../helpers/common";
 import DeleteProductModal from "../../modals/DeleteProductModal";
 import EditProductModal from "../../modals/EditProductModal";
+import PaginationComponent from "../../components/PaginationComponent";
+import TextField from "../../components/TextField";
+import { categoryListApi } from "../../services/CategoryServices";
 
 type ProductItem = {
     id: number;
     name: string;
-    material: string;
-    size: string;
     price: number;
-    countInStock: number;
-    image: string;
+    thumbnail: string;
+    description: string;
+    category_name: string;
+};
+
+type CategoryItem = {
+    id: number;
+    name: string;
 };
 
 function Products() {
     const [refreshList, setRefreshList] = useState(false);
     const [isFetchData, setIsFetchData] = useState(false);
 
-    const [searchText, setSearchText] = useState<string>("");
-    const [searchType, setSearchType] = useState<string>("");
-    const [pageIndex, setPageIndex] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(7);
-    const [totalPage, setTotalPage] = useState<number>(0);
+    const [keyword, setKeyword] = useState<string>("");
+    const searchRef = useRef<any>(null);
+    const [categoryId, setCategoryId] = useState<number>(0);
+    const [page, setPage] = useState<number>(0);
+    const [limit, setLimit] = useState<number>(7);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const [productId, setProductId] = useState<number>();
     const [productName, setProductName] = useState<string>();
 
@@ -35,6 +43,7 @@ function Products() {
     const [isShowEditProduct, setIsShowEditProduct] = useState(false);
 
     const [productList, setProductList] = useState<ProductItem[]>([]);
+    const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
 
     const handleShowAddProduct = () => {
         setIsShowAddProduct(true);
@@ -65,32 +74,55 @@ function Products() {
     useEffect(() => {
         const fetchListProduct = async () => {
             const res: any = await productListApi(
-                pageIndex,
-                pageSize,
-                searchText,
-                searchType
+                page,
+                limit,
+                categoryId,
+                keyword
             );
 
             if (res) {
-                setTotalPage(res.totalPages);
-                setProductList([...res.content]);
+                setTotalPages(res.totalPages);
+                setProductList([...res.productResponses]);
             }
         };
         fetchListProduct();
-    }, [searchText, pageIndex, refreshList]);
+    }, [keyword, limit, categoryId, page, refreshList]);
 
-    let items = [];
+    useEffect(() => {
+        const fetchListCategory = async () => {
+            const res: any = await categoryListApi();
 
-    for (let i = 1; i <= totalPage; i++) {
-        items.push(
-            <Pagination.Item
-                key={i}
-                active={i === pageIndex + 1}
-                onClick={() => setPageIndex(i - 1)}
-            >
-                {i}
-            </Pagination.Item>
-        );
+            if (res) {
+                setCategoryList([...res]);
+            }
+        };
+        fetchListCategory();
+    }, []);
+
+    const handleSearchKeyword = (value: string) => {
+        clearTimeout(searchRef.current!);
+        searchRef.current = setTimeout(() => {
+            setPage(0);
+            setKeyword(value);
+        }, 500);
+    };
+
+    const handleChangeCategory = (value: string) => {
+        clearTimeout(searchRef.current!);
+        searchRef.current = setTimeout(() => {
+            setPage(0);
+            setCategoryId(+value);
+        }, 500);
+    };
+
+    const displayedPages = [];
+    const itemsPerPage = 5; // Number of displayed page numbers
+    // Calculate starting and ending page for the displayed range
+    const startIndex = Math.max(Math.ceil(page - itemsPerPage / 2), 1);
+    const endIndex = Math.min(startIndex + itemsPerPage - 1, totalPages);
+    // Fill the displayedPages array with page numbers
+    for (let i = startIndex; i <= endIndex; i++) {
+        displayedPages.push(i);
     }
 
     return (
@@ -104,7 +136,46 @@ function Products() {
                     {/* Main Content */}
                     <div id="content">
                         {/* Topbar */}
-                        <Navbar />
+                        {/* <Navbar /> */}
+                        <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                            {/* Topbar Search */}
+                            <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100">
+                                <div className="d-flex align-item-center gap-5">
+                                    <div className="form-group">
+                                        <TextField
+                                            placeholder="Nhập để tìm kiếm"
+                                            onChange={handleSearchKeyword}
+                                            height="40px"
+                                            width="300px"
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <select
+                                            className="form-control"
+                                            onChange={(e) =>
+                                                handleChangeCategory(
+                                                    e.target.value
+                                                )
+                                            }
+                                        >
+                                            <option value="">
+                                                -- Category --
+                                            </option>
+                                            {categoryList.map((item) => {
+                                                return (
+                                                    <option
+                                                        key={item.id}
+                                                        value={item.id}
+                                                    >
+                                                        {item.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </nav>
 
                         {/* Begin Page Content */}
                         <div className="container-fluid">
@@ -124,7 +195,7 @@ function Products() {
                                 <>
                                     <div
                                         style={{
-                                            height: "50vh",
+                                            height: "55vh",
                                             overflow: "auto",
                                         }}
                                     >
@@ -133,11 +204,10 @@ function Products() {
                                                 <tr>
                                                     <th>#</th>
                                                     <th>Name</th>
-                                                    <th>Material</th>
-                                                    <th>Size</th>
                                                     <th>Price</th>
-                                                    <th>Count in stock</th>
-                                                    <th>Image</th>
+                                                    <th>Description</th>
+                                                    <th>Category</th>
+                                                    <th>Thumbnail</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -165,21 +235,28 @@ function Products() {
                                                                 {item.name}
                                                             </td>
                                                             <td>
-                                                                {item.material}
-                                                            </td>
-                                                            <td>{item.size}</td>
-                                                            <td>
                                                                 {formatCurrency(
                                                                     item.price
                                                                 )}
                                                             </td>
                                                             <td>
                                                                 {
-                                                                    item.countInStock
+                                                                    item.description
                                                                 }
                                                             </td>
                                                             <td>
-                                                                @{item.image}
+                                                                {
+                                                                    item.category_name
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {item.thumbnail !==
+                                                                    "" && (
+                                                                    <img
+                                                                        src={`http://localhost:8080/api/v1/products/images/${item.thumbnail}`}
+                                                                        width="50px"
+                                                                    />
+                                                                )}
                                                             </td>
                                                             <td>
                                                                 <div
@@ -210,8 +287,66 @@ function Products() {
                                             </tbody>
                                         </Table>
                                     </div>
-                                    <div className="mt-5">
-                                        <Pagination>{items}</Pagination>
+                                    <div className="mt-5 d-flex align-item-center gap-3">
+                                        <Pagination>
+                                            <Pagination.First
+                                                onClick={() => setPage(0)}
+                                            />
+                                            <Pagination.Prev
+                                                onClick={() => {
+                                                    page > 0 &&
+                                                        setPage(page - 1);
+                                                }}
+                                            />
+                                            {page > itemsPerPage / 2 && (
+                                                <Pagination.Ellipsis />
+                                            )}
+                                            {displayedPages.map(
+                                                (pageNumber) => (
+                                                    <Pagination.Item
+                                                        key={pageNumber}
+                                                        active={
+                                                            pageNumber ===
+                                                            page + 1
+                                                        }
+                                                        onClick={() =>
+                                                            setPage(
+                                                                pageNumber - 1
+                                                            )
+                                                        }
+                                                    >
+                                                        {pageNumber}
+                                                    </Pagination.Item>
+                                                )
+                                            )}
+                                            {page <
+                                                totalPages -
+                                                    itemsPerPage / 2 && (
+                                                <Pagination.Ellipsis />
+                                            )}
+                                            <Pagination.Next
+                                                onClick={() =>
+                                                    setPage(page + 1)
+                                                }
+                                            />
+                                            <Pagination.Last
+                                                onClick={() =>
+                                                    setPage(totalPages - 1)
+                                                }
+                                            />
+                                        </Pagination>
+                                        <select
+                                            // className="form-control"
+                                            onChange={(e) =>
+                                                setLimit(+e.target.value)
+                                            }
+                                            style={{ height: "30px" }}
+                                        >
+                                            <option value={7}>7</option>
+                                            <option value={15}>15</option>
+                                            <option value={20}>20</option>
+                                            <option value={30}>30</option>
+                                        </select>
                                     </div>
                                 </>
                             )}

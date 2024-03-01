@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import ButtonField from "../components/ButtonField";
 import TextField from "../components/TextField";
 import { useNavigate } from "react-router-dom";
-import { Account, FieldAccount } from "../models/account.model";
+import { User, FieldUser } from "../models/account.model";
 import axios from "../services/customize-axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../contexts/UserContext";
@@ -16,7 +16,7 @@ type Props = {
 
 function LogoutModal(props: Props) {
     const navigate = useNavigate();
-    const [account, setAccount] = useState<Account>();
+    const [account, setAccount] = useState<User>();
     const [loadingAPI, setLoadingAPI] = useState(false);
 
     const { logout } = useContext(UserContext);

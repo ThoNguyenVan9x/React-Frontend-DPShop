@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import ButtonField from "../components/ButtonField";
 import TextField from "../components/TextField";
 import { useNavigate } from "react-router-dom";
-import { Account, FieldAccount } from "../models/account.model";
+import { User, FieldUser } from "../models/account.model";
 import axios from "../services/customize-axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../contexts/UserContext";
@@ -17,43 +17,51 @@ type Props = {
 
 function RegisterModal(props: Props) {
     const navigate = useNavigate();
-    const [account, setAccount] = useState<Account>();
+    const [user, setUser] = useState<User>();
     const [loadingAPI, setLoadingAPI] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState(false);
 
     const handleChangeFieldAccount = (key: string, value: string) => {
-        setAccount({
-            ...account,
+        setUser({
+            ...user,
             [key]: value,
         });
     };
 
     useEffect(() => {
         setRegisterSuccess(false);
-        setAccount({});
+        setUser({});
     }, [props.handleShow()]);
 
     const handleRegister = async () => {
         if (
-            !account?.username?.trim() ||
-            !account.password?.trim() ||
-            !account.fullName?.trim() ||
-            !account.email?.trim() ||
-            !account.address?.trim() ||
-            !account.phone?.trim() ||
-            !account.rePassword?.trim() ||
-            account?.password !== account?.rePassword
+            !user?.fullName?.trim() ||
+            !user.phoneNumber?.trim() ||
+            !user.address?.trim() ||
+            !user.password?.trim() ||
+            !user.rePassword?.trim() ||
+            user.password?.trim() !== user.rePassword.trim() ||
+            !user.dateOfBirth
         ) {
             toast.error("Invalid information!");
             return;
         }
+        console.log("user login: ", user);
 
         setLoadingAPI(true);
-        let res: any = await registerApi(account);
+        let res: any = await registerApi(
+            user.fullName,
+            user.phoneNumber,
+            user.address,
+            user.password,
+            user.rePassword,
+            user.dateOfBirth,
+            1
+        );
         if (res) {
             toast.success("Register success");
             setRegisterSuccess(true);
-            setAccount({});
+            setUser({});
             // props.handleClose();
         } else {
             toast.error("Have an error!");
@@ -94,7 +102,7 @@ function RegisterModal(props: Props) {
                                     <div className="d-flex gap-3">
                                         <div className="w-100">
                                             <span>
-                                                Full name{" "}
+                                                Họ tên{" "}
                                                 <span className="text-danger">
                                                     *
                                                 </span>
@@ -103,28 +111,29 @@ function RegisterModal(props: Props) {
                                                 width="100%"
                                                 onChange={(e) =>
                                                     handleChangeFieldAccount(
-                                                        FieldAccount.FullName,
+                                                        FieldUser.FullName,
                                                         e
                                                     )
                                                 }
                                             />
                                             <span>
-                                                Email{" "}
+                                                Ngày sinh{" "}
                                                 <span className="text-danger">
                                                     *
                                                 </span>
                                             </span>
                                             <TextField
                                                 width="100%"
+                                                type="date"
                                                 onChange={(e) =>
                                                     handleChangeFieldAccount(
-                                                        FieldAccount.Email,
+                                                        FieldUser.DateOfBirth,
                                                         e
                                                     )
                                                 }
                                             />
                                             <span>
-                                                Phone{" "}
+                                                Địa chỉ{" "}
                                                 <span className="text-danger">
                                                     *
                                                 </span>
@@ -133,31 +142,25 @@ function RegisterModal(props: Props) {
                                                 width="100%"
                                                 onChange={(e) =>
                                                     handleChangeFieldAccount(
-                                                        FieldAccount.phone,
+                                                        FieldUser.Address,
                                                         e
                                                     )
                                                 }
                                             />
-                                            <span>
-                                                Address{" "}
-                                                <span className="text-danger">
-                                                    *
-                                                </span>
-                                            </span>
-                                            <TextField
-                                                width="100%"
-                                                onChange={(e) =>
-                                                    handleChangeFieldAccount(
-                                                        FieldAccount.Address,
-                                                        e
-                                                    )
-                                                }
-                                            />
+                                            <span>Role</span>
+                                            <select
+                                                id="c_country"
+                                                className="form-control"
+                                            >
+                                                <option value={"1"}>
+                                                    CUSTOMER
+                                                </option>
+                                            </select>
                                         </div>
 
                                         <div className="w-100">
                                             <span>
-                                                Username{" "}
+                                                Số điện thoại{" "}
                                                 <span className="text-danger">
                                                     *
                                                 </span>
@@ -166,13 +169,14 @@ function RegisterModal(props: Props) {
                                                 width="100%"
                                                 onChange={(e) =>
                                                     handleChangeFieldAccount(
-                                                        FieldAccount.Username,
+                                                        FieldUser.PhoneNumber,
                                                         e
                                                     )
                                                 }
                                             />
+
                                             <span className="mt-3 mb-0">
-                                                Password{" "}
+                                                Mật khẩu{" "}
                                                 <span className="text-danger">
                                                     *
                                                 </span>
@@ -187,14 +191,14 @@ function RegisterModal(props: Props) {
                                                     width="100%"
                                                     onChange={(e) =>
                                                         handleChangeFieldAccount(
-                                                            FieldAccount.Password,
+                                                            FieldUser.Password,
                                                             e
                                                         )
                                                     }
                                                 />
                                             </div>
                                             <span className="mt-3 mb-0">
-                                                Re-Password{" "}
+                                                Nhập lại mật khẩu{" "}
                                                 <span className="text-danger">
                                                     *
                                                 </span>
@@ -209,7 +213,7 @@ function RegisterModal(props: Props) {
                                                     width="100%"
                                                     onChange={(e) =>
                                                         handleChangeFieldAccount(
-                                                            FieldAccount.RePassword,
+                                                            FieldUser.RePassword,
                                                             e
                                                         )
                                                     }
@@ -233,8 +237,13 @@ function RegisterModal(props: Props) {
                                     </div>
                                     <button
                                         disabled={
-                                            account?.username &&
-                                            account?.password
+                                            user?.fullName &&
+                                            user?.dateOfBirth &&
+                                            user?.address &&
+                                            user?.phoneNumber &&
+                                            user?.password &&
+                                            user?.rePassword &&
+                                            user?.password == user?.rePassword
                                                 ? false
                                                 : true
                                         }

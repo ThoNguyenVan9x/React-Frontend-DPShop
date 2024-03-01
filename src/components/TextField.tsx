@@ -4,7 +4,7 @@ type Props = {
     value?: any;
     width?: string;
     height?: string;
-    onChange?: (value: string) => void;
+    onChange?: (value: any) => void;
 };
 
 function TextField({ type, width, height, onChange, ...props }: Props) {
@@ -16,6 +16,7 @@ function TextField({ type, width, height, onChange, ...props }: Props) {
                 type === "text" ||
                 type === "number" ||
                 type === "password" ||
+                type === "date" ||
                 !type
                     ? "form-control"
                     : "d-block"

@@ -21,10 +21,17 @@ import Forbidden from "./Forbidden";
 import Products from "../pages/admin/Products";
 import Orders from "../pages/admin/Orders";
 import Accounts from "../pages/admin/Accounts";
+import { jwtDecode } from "jwt-decode";
 
 function AppRoutes() {
     const { user } = useContext(UserContext);
     const path = window.location.pathname;
+    const token: any = localStorage.getItem("token");
+    let decoded: any = "";
+    if (token) {
+        decoded = jwtDecode(token);
+        console.log("decode: ", decoded);
+    }
 
     return (
         <div>
@@ -41,7 +48,7 @@ function AppRoutes() {
                 <Route path="/thankyou" element={<Thankyou />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
 
-                {user.role !== "ADMIN" &&
+                {decoded.role !== "ROLE_ADMIN" &&
                 (path.includes("/add-product") ||
                     path.includes("/products/edit") ||
                     path.includes("/admin")) ? (

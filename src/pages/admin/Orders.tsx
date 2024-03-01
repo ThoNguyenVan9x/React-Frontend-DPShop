@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "../../components/admin/Navbar";
-import Sidbar from "../../components/admin/Sidbar";
+import Sidbar from "../../components/admin/Sidebar";
 
 function Orders() {
     return (

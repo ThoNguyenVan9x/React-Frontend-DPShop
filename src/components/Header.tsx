@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import LogoutModal from "../modals/LogoutModal";
 import { UserContext } from "../contexts/UserContext";
 import RegisterModal from "../modals/RegisterModal";
+import { jwtDecode } from "jwt-decode";
 
 function Header() {
     const { pathname } = useLocation();
@@ -16,8 +17,6 @@ function Header() {
     const [isShowLogoutModal, setIsShowLogoutModal] = useState(false);
     const [isShowRegisterModal, setIsShowRegisterModal] = useState(false);
     const [resetTextFieldLogin, setResetTextFieldLogin] = useState(false);
-
-    const token = localStorage.getItem("token");
 
     const handleShowCartModal = () => {
         setIsShowCartModal(true);
@@ -51,6 +50,12 @@ function Header() {
     const { cartItems, cartQty, totalPrice } = useShoppingContext();
 
     const { user } = useContext(UserContext);
+    const token: any = localStorage.getItem("token");
+    let decoded: any = "";
+    if (token) {
+        decoded = jwtDecode(token);
+        console.log("decode: ", decoded);
+    }
 
     return (
         <div>
@@ -194,7 +199,7 @@ function Header() {
                                     </span>
                                 </span>
                             </li>
-                            {user && user.role === "ADMIN" && (
+                            {decoded.role === "ROLE_ADMIN" && (
                                 <a href="/admin">
                                     <li
                                         style={{ cursor: "pointer" }}

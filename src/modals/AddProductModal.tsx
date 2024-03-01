@@ -4,12 +4,37 @@ import { Modal } from "react-bootstrap";
 import ButtonField from "../components/ButtonField";
 import TextField from "../components/TextField";
 import { useNavigate } from "react-router-dom";
-import { Account, FieldAccount } from "../models/account.model";
-import axios from "../services/customize-axios";
+import { User, FieldUser } from "../models/account.model";
+// import axios from "../services/customize-axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../contexts/UserContext";
 import { FieldProduct, Product } from "../models/product.model";
 import { productAddApi } from "../services/ProductServices";
+import { categoryListApi } from "../services/CategoryServices";
+import axios from "axios";
+
+type ProductItem = {
+    id: number;
+    name: string;
+    price: number;
+    thumbnail: any;
+    description: string;
+    categoryId: number;
+};
+
+enum FieldProductItem {
+    Id = "id",
+    Name = "name",
+    Price = "price",
+    Thumbnail = "thumbnail",
+    Description = "description",
+    CategoryId = "categoryId",
+}
+
+type CategoryItem = {
+    id: number;
+    name: string;
+};
 
 type Props = {
     handleShow: () => boolean;
@@ -19,9 +44,22 @@ type Props = {
 
 function AddProductModal(props: Props) {
     const navigate = useNavigate();
-    const [product, setProduct] = useState<Product>({});
+    const [product, setProduct] = useState<ProductItem>({} as ProductItem);
+    const [thumbnail, setThumbnail] = useState<any>();
+    const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
 
-    const handleChangeFieldProduct = (key: string, value: any) => {
+    useEffect(() => {
+        const fetchListCategory = async () => {
+            const res: any = await categoryListApi();
+
+            if (res) {
+                setCategoryList([...res]);
+            }
+        };
+        fetchListCategory();
+    }, []);
+
+    const handleChangeFieldProduct = (key: any, value: any) => {
         setProduct({
             ...product,
             [key]: value,
@@ -31,33 +69,57 @@ function AddProductModal(props: Props) {
     const handleAddNewProduct = async () => {
         if (
             !product.name?.trim() ||
-            !product.material?.trim() ||
-            !product.size?.trim() ||
-            !product.type?.trim() ||
-            !product.price
+            !product.price ||
+            !product.thumbnail ||
+            !product.description?.trim() ||
+            !product.categoryId
         )
             return;
-        fetch(`http://localhost:8080/api/products/add`, {
-            method: "POST",
-            body: JSON.stringify(product),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data && data.id) {
-                    setProduct({});
-                    props.handleRefreshList();
-                    props.handleClose();
-                    toast.success("Add success!");
-                }
-            });
+
+        let thumbnailRequest = product.thumbnail[0];
+        product.thumbnail = thumbnailRequest;
+
+        let productSendRequest = {
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            category_id: product.categoryId,
+        };
+
+        const formData = new FormData();
+        formData.append("image", product.thumbnail);
+        formData.append("object", JSON.stringify(productSendRequest));
+        try {
+            let res = await fetch("http://localhost:8080/api/v1/products", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data && data.id) {
+                        setProduct({} as ProductItem);
+                        props.handleRefreshList();
+                        props.handleClose();
+                        toast.success("Add success!");
+                    }
+                });
+        } catch (error) {
+            console.log(error);
+            toast.error("Add failed!");
+        }
+    };
+
+    const previewImage = () => {
+        return (
+            <img src={URL.createObjectURL(product.thumbnail[0])} width="100%" />
+        );
     };
 
     useEffect(() => {
-        setProduct({});
+        setProduct({} as ProductItem);
     }, [props.handleShow()]);
 
     return (
@@ -88,73 +150,11 @@ function AddProductModal(props: Props) {
                                         width="100%"
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
-                                                FieldProduct.Name,
+                                                FieldProductItem.Name,
                                                 e
                                             )
                                         }
                                     />
-                                    <span>
-                                        Material{" "}
-                                        <span className="text-danger">*</span>
-                                    </span>
-                                    <TextField
-                                        width="100%"
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Material,
-                                                e
-                                            )
-                                        }
-                                    />
-                                    <span>
-                                        Size(L x W x H){" "}
-                                        <span className="text-danger">*</span>
-                                    </span>
-                                    <TextField
-                                        width="100%"
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Size,
-                                                e
-                                            )
-                                        }
-                                    />
-                                    <div className="">
-                                        <span className="">
-                                            Type{" "}
-                                            <span className="text-danger">
-                                                *
-                                            </span>
-                                        </span>
-                                        <select
-                                            id="c_country"
-                                            className="form-control"
-                                            onChange={(e) =>
-                                                handleChangeFieldProduct(
-                                                    FieldProduct.Type,
-                                                    e.target.value
-                                                )
-                                            }
-                                        >
-                                            <option value={""}>
-                                                -- Select Type --
-                                            </option>
-                                            <option value={"TABLE"}>
-                                                TABLE
-                                            </option>
-                                            <option value={"BED"}>BED</option>
-                                            <option value={"SOFA"}>SOFA</option>
-                                            <option value={"CABINET"}>
-                                                CABINET
-                                            </option>
-                                            <option value={"CHAIR"}>
-                                                CHAIR
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="w-100">
                                     <span>
                                         Price{" "}
                                         <span className="text-danger">*</span>
@@ -164,46 +164,76 @@ function AddProductModal(props: Props) {
                                         width="100%"
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
-                                                FieldProduct.Price,
-                                                e
-                                            )
-                                        }
-                                    />
-                                    <span className="mt-3 mb-0">
-                                        Discount(%){" "}
-                                    </span>
-
-                                    <TextField
-                                        type="number"
-                                        width="100%"
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Discount,
-                                                e
-                                            )
-                                        }
-                                    />
-
-                                    <span>Rating </span>
-                                    <TextField
-                                        type="number"
-                                        width="100%"
-                                        onChange={(e) =>
-                                            handleChangeFieldProduct(
-                                                FieldProduct.Rating,
+                                                FieldProductItem.Price,
                                                 e
                                             )
                                         }
                                     />
                                     <span>
-                                        Image{" "}
+                                        Description{" "}
+                                        <span className="text-danger">*</span>
+                                    </span>
+                                    <TextField
+                                        type="text"
+                                        width="100%"
+                                        onChange={(e) =>
+                                            handleChangeFieldProduct(
+                                                FieldProductItem.Description,
+                                                e
+                                            )
+                                        }
+                                    />
+                                    <div className="">
+                                        <span className="">
+                                            Category{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </span>
+                                        <select
+                                            className="form-control"
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProductItem.CategoryId,
+                                                    e.target.value
+                                                )
+                                            }
+                                        >
+                                            <option value="">
+                                                -- Category --
+                                            </option>
+                                            {categoryList.map((item) => {
+                                                return (
+                                                    <option
+                                                        key={item.id}
+                                                        value={item.id}
+                                                    >
+                                                        {item.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                    </div>
+                                    <span>
+                                        Thumbnail{" "}
                                         <span className="text-danger">*</span>
                                     </span>
                                     <input
                                         type="file"
-                                        // multiple
                                         accept="image/*"
+                                        onChange={(e) =>
+                                            handleChangeFieldProduct(
+                                                FieldProductItem.Thumbnail,
+                                                e.target.files
+                                            )
+                                        }
                                     />
+                                </div>
+
+                                <div className="w-100">
+                                    {product.thumbnail &&
+                                        product.thumbnail[0] &&
+                                        previewImage()}
                                 </div>
                             </div>
                             <div className="mb-5"></div>
@@ -219,10 +249,10 @@ function AddProductModal(props: Props) {
                                     onClick={() => handleAddNewProduct()}
                                     disabled={
                                         product?.name &&
-                                        product?.material &&
-                                        product?.size &&
-                                        product?.type &&
-                                        product?.price
+                                        product?.price &&
+                                        product?.description &&
+                                        product?.thumbnail &&
+                                        product?.categoryId
                                             ? false
                                             : true
                                     }
@@ -230,39 +260,10 @@ function AddProductModal(props: Props) {
                                     Add new
                                 </button>
                             </div>
-
-                            {/* <button
-                                disabled={
-                                    account?.username && account?.password
-                                        ? false
-                                        : true
-                                }
-                                type="button"
-                                style={{ width: "100%" }}
-                                className="btn btn-primary"
-                                onClick={() => handleRegister()}
-                            >
-                                {loadingAPI && (
-                                    <i className="fas fa-spinner fa-spin"></i>
-                                )}{" "}
-                                Register
-                            </button> */}
-
                             <div className="p-3"></div>
                         </div>
                     </div>
                 </Modal.Body>
-                {/* <Modal.Footer>
-                    <ButtonField onClick={props.handleClose}>Đóng</ButtonField>
-                    <ButtonField
-                        color="secondary"
-                        onClick={() => {
-                            props.handleClose();
-                        }}
-                    >
-                        Thanh toán
-                    </ButtonField>
-                </Modal.Footer> */}
             </Modal>
         </>
     );

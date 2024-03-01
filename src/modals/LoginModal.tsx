@@ -4,10 +4,11 @@ import { Modal } from "react-bootstrap";
 import ButtonField from "../components/ButtonField";
 import TextField from "../components/TextField";
 import { useNavigate } from "react-router-dom";
-import { Account, FieldAccount } from "../models/account.model";
+import { User, FieldUser } from "../models/account.model";
 import axios from "../services/customize-axios";
 import { toast } from "react-toastify";
 import { UserContext } from "../contexts/UserContext";
+import { log } from "console";
 
 type Props = {
     handleShow: () => boolean;
@@ -17,7 +18,7 @@ type Props = {
 
 function LoginModal(props: Props) {
     const navigate = useNavigate();
-    const [account, setAccount] = useState<Account>();
+    const [account, setAccount] = useState<User>();
     const [loadingAPI, setLoadingAPI] = useState(false);
 
     const { loginContext } = useContext(UserContext);
@@ -34,25 +35,27 @@ function LoginModal(props: Props) {
     }, [props.handleShow()]);
 
     const handleLogin = async () => {
-        if (!account?.username?.trim() || !account.password?.trim()) return;
-
+        console.log("account: ", account);
+        console.log(account?.phoneNumber);
+        if (!account?.phoneNumber?.trim() || !account.password?.trim()) return;
         setLoadingAPI(true);
-        let res: any = await loginApi(account.username, account.password);
+        let res: any = await loginApi(account.phoneNumber, account.password);
         if (res && res.token) {
             toast.success("Login success!");
             loginContext(
-                res.username,
-                res.fullName,
-                res.email,
-                res.phone,
-                res.address,
-                res.role,
+                res.user.id,
+                res.user.fullName,
+                res.user.phoneNumber,
+                res.user.dateOfBirth,
+                res.user.address,
+                res.user.role,
                 res.token
             );
             setAccount({});
             props.handleClose();
         } else {
             toast.error("Login that bai");
+            setAccount({});
         }
         setLoadingAPI(false);
     };
@@ -85,12 +88,17 @@ function LoginModal(props: Props) {
                 <Modal.Body>
                     <div className="d-flex justify-content-center">
                         <div className="body-login w-75">
-                            <span>Username</span>
+                            <span>Phone number</span>
                             <TextField
                                 width="100%"
+                                value={
+                                    account?.phoneNumber
+                                        ? account.phoneNumber
+                                        : ""
+                                }
                                 onChange={(e) =>
                                     handleChangeFieldAccount(
-                                        FieldAccount.Username,
+                                        FieldUser.PhoneNumber,
                                         e
                                     )
                                 }
@@ -99,10 +107,15 @@ function LoginModal(props: Props) {
                             <div onKeyDown={(event) => handlePressEnter(event)}>
                                 <TextField
                                     type="password"
+                                    value={
+                                        account?.password
+                                            ? account.password
+                                            : ""
+                                    }
                                     width="100%"
                                     onChange={(e) =>
                                         handleChangeFieldAccount(
-                                            FieldAccount.Password,
+                                            FieldUser.Password,
                                             e
                                         )
                                     }
@@ -128,7 +141,7 @@ function LoginModal(props: Props) {
                             </div>
                             <button
                                 disabled={
-                                    account?.username && account?.password
+                                    account?.phoneNumber && account?.password
                                         ? false
                                         : true
                                 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Accordion, Button, Card, Offcanvas } from "react-bootstrap";
 import TextField from "../../components/TextField";
-import Sidbar from "../../components/admin/Sidbar";
+import Sidbar from "../../components/admin/Sidebar";
 import Navbar from "../../components/admin/Navbar";
 
 function Admin() {

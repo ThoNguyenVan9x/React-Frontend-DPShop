@@ -19,7 +19,7 @@ import { ToastContainer } from "react-toastify";
 import { UserContext } from "./contexts/UserContext";
 import AppRoutes from "./routes/AppRoutes";
 import OrderSuccess from "./pages/OrderSuccess";
-import Sidbar from "./components/admin/Sidbar";
+import Sidbar from "./components/admin/Sidebar";
 
 function App() {
     const { user, loginContext } = useContext(UserContext);
@@ -27,13 +27,13 @@ function App() {
     const path = window.location.pathname;
 
     useEffect(() => {
-        if (localStorage.getItem("username")) {
+        if (localStorage.getItem("phoneNumber")) {
             loginContext(
-                localStorage.getItem("username"),
+                localStorage.getItem("id"),
                 localStorage.getItem("fullName"),
-                localStorage.getItem("email"),
-                localStorage.getItem("phone"),
+                localStorage.getItem("phoneNumber"),
                 localStorage.getItem("address"),
+                localStorage.getItem("dateOfBirth"),
                 localStorage.getItem("role"),
                 localStorage.getItem("token")
             );

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { Alert } from "react-bootstrap";
+import { jwtDecode } from "jwt-decode";
 
 function PrivateRoute(props: any) {
     console.log(">>> props: ", props);

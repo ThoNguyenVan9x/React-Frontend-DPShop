@@ -4,7 +4,7 @@ import axios from "axios";
 import Hero from "../components/Hero";
 import NavbarShop from "../components/NavbarShop";
 import ProductItem from "../components/ProductItem";
-import MyPagination from "../components/MyPagination";
+import MyPagination from "../components/PaginationComponent";
 import ButtonField from "../components/ButtonField";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
@@ -38,7 +38,7 @@ function Shop() {
                 const res: any = await productListApi(
                     page,
                     pageSize,
-                    searchText,
+                    0,
                     searchType
                 );
                 setTotalPage(res.totalPages);

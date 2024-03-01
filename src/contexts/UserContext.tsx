@@ -1,18 +1,19 @@
 import { ReactNode, createContext, useState } from "react";
+import { User } from "../models/account.model";
 
 type UserContextProviderProps = {
     children: ReactNode;
 };
 
-type User = {
-    username: string;
-    fullName: string;
-    email: string;
-    phone: string;
-    address: string;
-    role: string;
-    token: string;
-};
+// type User = {
+//     username: string;
+//     fullName: string;
+//     email: string;
+//     phone: string;
+//     address: string;
+//     role: string;
+//     token: string;
+// };
 
 const UserContext = createContext<any>({} as User);
 
@@ -20,38 +21,38 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
     const [user, setUser] = useState<User>({} as User);
 
     const loginContext = (
-        username: string,
+        id: number,
         fullName: string,
-        email: string,
-        phone: string,
+        phoneNumber: string,
         address: string,
+        dateOfBirth: Date,
         role: string,
         token: string
     ) => {
         setUser((user) => ({
-            username: username,
+            id: id,
             fullName: fullName,
-            email: email,
-            phone: phone,
+            phoneNumber: phoneNumber,
+            dateOfBirth: dateOfBirth,
             address: address,
             role: role,
             token: token,
         }));
 
-        localStorage.setItem("username", username);
+        localStorage.setItem("id", id + "");
         localStorage.setItem("fullName", fullName);
-        localStorage.setItem("email", email);
-        localStorage.setItem("phone", phone);
+        localStorage.setItem("phoneNumber", phoneNumber);
         localStorage.setItem("address", address);
+        localStorage.setItem("dateOfBirth", dateOfBirth + "");
         localStorage.setItem("role", role);
         localStorage.setItem("token", token);
     };
 
     const logout = () => {
-        localStorage.removeItem("username");
+        localStorage.removeItem("id");
         localStorage.removeItem("fullName");
-        localStorage.removeItem("email");
-        localStorage.removeItem("phone");
+        localStorage.removeItem("phoneNumber");
+        localStorage.removeItem("dateOfBirth");
         localStorage.removeItem("address");
         localStorage.removeItem("role");
         localStorage.removeItem("token");
