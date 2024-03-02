@@ -2,15 +2,26 @@ import React, { useEffect, useState } from "react";
 import Hero from "../components/Hero";
 import { useShoppingContext } from "../contexts/ShoppingContext";
 import { formatCurrency } from "../helpers/common";
-import { CustomerInfo, FieldCustomerInfo } from "../models/customerInfo.model";
+import {
+    CustomerOrderInfo,
+    FieldCustomerInfo,
+} from "../models/customerInfo.model";
 import { orderApi } from "../services/OrderService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
+type ProductRequestType = {
+    product_id: any;
+    quantity: any;
+};
+
 function Checkout() {
     const { totalPrice, cartItems, clearCartItem } = useShoppingContext();
     const navigate = useNavigate();
-    const [customerInfo, setCustomerInfo] = useState<CustomerInfo>();
+    const [customerInfo, setCustomerInfo] = useState<CustomerOrderInfo>();
+    const [cartItemsRequest, setCartItemsRequest] = useState<
+        ProductRequestType[]
+    >([{} as ProductRequestType]);
     // const [orderInfo, setOrderInfo] = useState<OrderInfo>();
 
     const handleChangeFieldCustomerInfo = (key: string, value: string) => {
@@ -20,24 +31,48 @@ function Checkout() {
         });
     };
 
-    // useEffect(() => {
-    //     setOrderInfo({
-    //         order: cartItems,
-    //         customer: customerInfo,
-    //     });
-    // }, [cartItems, customerInfo]);
-
     const handleOrder = async () => {
         if (
             !customerInfo?.fullName?.trim() ||
             !customerInfo?.address?.trim() ||
             !customerInfo.phone?.trim() ||
-            !customerInfo.payment?.trim()
+            !customerInfo.shippingMethod?.trim() ||
+            !customerInfo.paymentMethod?.trim()
         )
             return;
+        cartItems.map((item) => {
+            setCartItemsRequest([
+                ...cartItemsRequest,
+                { product_id: item.id, quantity: item.qty },
+            ]);
+        });
 
-        let res: any = await orderApi({ customerInfo, cartItems });
-        if (res) {
+        let dataCartItem: Object[] = [];
+        cartItems.map((item) => {
+            dataCartItem = [
+                ...dataCartItem,
+                { product_id: item.id, quantity: item.qty },
+            ];
+        });
+
+        const data = {
+            user_id: localStorage.getItem("id"),
+            fullname: customerInfo?.fullName,
+            email: customerInfo?.email,
+            phone_number: customerInfo?.phone,
+            address: localStorage.getItem("address"),
+            note: customerInfo?.note,
+            total_money: totalPrice,
+            shipping_address: customerInfo?.address,
+            payment_method: customerInfo?.paymentMethod,
+            shipping_method: customerInfo?.shippingMethod,
+            cart_items: dataCartItem,
+        };
+
+        let res: any = await orderApi(data);
+        if (res && res.id) {
+            console.log("res order: ", res);
+
             toast.success("Order success!");
             clearCartItem();
             navigate("/order-success");
@@ -325,6 +360,42 @@ function Checkout() {
                                                         htmlFor="c_country"
                                                         className="text-black"
                                                     >
+                                                        Chọn đơn vị vận chuyển{" "}
+                                                        <span className="text-danger">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <select
+                                                        id="c_country"
+                                                        className="form-control"
+                                                        onChange={(e) =>
+                                                            handleChangeFieldCustomerInfo(
+                                                                FieldCustomerInfo.ShippingMethod,
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    >
+                                                        <option value={""}>
+                                                            -- Chọn đơn vị vận
+                                                            chuyển --
+                                                        </option>
+                                                        <option
+                                                            value={"EXPRESS"}
+                                                        >
+                                                            Giao hàng nhanh
+                                                            (Express)
+                                                        </option>
+                                                        <option value={"GHTK"}>
+                                                            Giao hàng tiết kiệm
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+                                                <div className="form-group mb-5">
+                                                    <label
+                                                        htmlFor="c_country"
+                                                        className="text-black"
+                                                    >
                                                         Chọn hình thức thanh
                                                         toán{" "}
                                                         <span className="text-danger">
@@ -336,7 +407,7 @@ function Checkout() {
                                                         className="form-control"
                                                         onChange={(e) =>
                                                             handleChangeFieldCustomerInfo(
-                                                                FieldCustomerInfo.Payment,
+                                                                FieldCustomerInfo.PaymentMethod,
                                                                 e.target.value
                                                             )
                                                         }
@@ -367,7 +438,8 @@ function Checkout() {
                                                             customerInfo?.fullName &&
                                                             customerInfo?.address &&
                                                             customerInfo?.phone &&
-                                                            customerInfo?.payment
+                                                            customerInfo?.shippingMethod &&
+                                                            customerInfo?.paymentMethod
                                                                 ? false
                                                                 : true
                                                         }

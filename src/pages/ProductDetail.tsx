@@ -7,6 +7,15 @@ import { useShoppingContext } from "../contexts/ShoppingContext";
 import { toast } from "react-toastify";
 import { UserContext } from "../contexts/UserContext";
 
+type ProductType = {
+    id: number;
+    name: string;
+    price: number;
+    thumbnail: any;
+    description: string;
+    categoryId: number;
+};
+
 function ProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -16,15 +25,12 @@ function ProductDetail() {
     const { user } = useContext(UserContext);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/products/detail/${id}`)
-            // {
-            //     headers: {
-            //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-            //     },
-            // })
+        fetch(`http://localhost:8080/api/v1/products/${id}`)
             .then((res) => res.json())
             .then((data) => {
-                setProduct(data);
+                if (data && data.id) {
+                    setProduct(data);
+                }
             });
     }, [id]);
 
@@ -47,7 +53,11 @@ function ProductDetail() {
                     <img
                         width="450px"
                         height="450px"
-                        src={product.image}
+                        src={
+                            product.thumbnail
+                                ? `http://localhost:8080/api/v1/products/images/${product.thumbnail}`
+                                : ""
+                        }
                         alt="product"
                     />
                     <div>
@@ -60,19 +70,31 @@ function ProductDetail() {
                         <div style={{ marginBottom: "1.5rem" }}>
                             Chất liệu:&emsp;
                             <span style={{ fontSize: "24px" }}>
-                                {product.material}
+                                {/* {product.material} */}
                             </span>
                         </div>
                         <div style={{ marginBottom: "1.5rem" }}>
                             Kích thước:&emsp;
                             <span style={{ fontSize: "24px" }}>
-                                {product.size}
+                                {/* {product.size} */}
+                            </span>
+                        </div>
+                        <div style={{ marginBottom: "1.5rem" }}>
+                            Mô tả:&emsp;
+                            <span style={{ fontSize: "24px" }}>
+                                {product.description}
                             </span>
                         </div>
                         <div style={{ marginBottom: "1.5rem" }}>
                             Giá:&emsp;
                             <span style={{ fontSize: "24px" }}>
                                 {formatCurrency(product.price)}
+                            </span>
+                        </div>
+                        <div style={{ marginBottom: "1.5rem" }}>
+                            Loại:&emsp;
+                            <span style={{ fontSize: "24px" }}>
+                                {product.category_name}
                             </span>
                         </div>
                         <div style={{ marginBottom: "3.5rem" }}>
@@ -85,7 +107,7 @@ function ProductDetail() {
                         <div style={{ display: "flex", gap: "10px" }}>
                             <ButtonField
                                 color="black"
-                                onClick={() => window.history.back()}
+                                onClick={() => navigate("/shop")}
                             >
                                 Quay lại
                             </ButtonField>

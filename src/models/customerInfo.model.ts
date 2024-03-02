@@ -1,10 +1,11 @@
-export type CustomerInfo = {
+export type CustomerOrderInfo = {
     fullName?: string;
     email?: string;
     phone?: string;
     address?: string;
     note?: string;
-    payment?: string;
+    paymentMethod?: string;
+    shippingMethod?: string;
 };
 
 export enum FieldCustomerInfo {
@@ -13,5 +14,6 @@ export enum FieldCustomerInfo {
     Phone = "phone",
     Address = "address",
     Note = "note",
-    Payment = "payment",
+    PaymentMethod = "paymentMethod",
+    ShippingMethod = "shippingMethod",
 }

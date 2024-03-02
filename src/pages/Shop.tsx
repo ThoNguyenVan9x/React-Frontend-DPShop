@@ -4,55 +4,70 @@ import axios from "axios";
 import Hero from "../components/Hero";
 import NavbarShop from "../components/NavbarShop";
 import ProductItem from "../components/ProductItem";
-import MyPagination from "../components/PaginationComponent";
 import ButtonField from "../components/ButtonField";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { productListApi } from "../services/ProductServices";
+import { categoryListApi } from "../services/CategoryServices";
 
-type ProductItem = {
+type ProductType = {
     id: number;
     name: string;
     price: number;
-    image: string;
+    thumbnail: any;
+    description: string;
+    categoryId: number;
+};
+
+type CategoryItem = {
+    id: number;
+    name: string;
 };
 
 function Shop() {
-    const [products, setProducts] = useState<ProductItem[]>([]);
+    const [products, setProducts] = useState<ProductType[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(8);
+    const [limit, setLimit] = useState<number>(16);
     const [totalPage, setTotalPage] = useState<number>(0);
-    const [searchType, setSearchType] = useState<string>("");
-    const [searchText, setSearchText] = useState<string>("");
+    const [category, setCategory] = useState<string>("");
+    const [keyword, setKeyword] = useState<string>("");
     const searchRef = useRef<any>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (searchText !== "") {
-            setSearchType("");
+        console.log("chay vao ham fetch product type: ");
+        console.log("category: ", category);
+        console.log("keyword: ", keyword);
+        console.log("page index: ", page);
+
+        if (keyword !== "") {
+            setCategory("");
         }
 
         const fetchProductsType = async () => {
             try {
                 const res: any = await productListApi(
                     page,
-                    pageSize,
-                    0,
-                    searchType
+                    limit,
+                    category as any,
+                    keyword
                 );
-                setTotalPage(res.totalPages);
-                if (products.length > 0 && page > 0) {
-                    setProducts([...products, ...res.content]);
-                } else {
-                    setProducts(res.content);
+                console.log("res : ", res);
+                if (res) {
+                    setTotalPage(res.totalPages);
+                    if (products && products.length > 0 && page >= 0) {
+                        setProducts([...products, ...res.productResponses]);
+                    } else {
+                        setProducts(res.productResponses);
+                    }
                 }
             } catch (error) {
                 console.log("error: ", error);
             }
         };
         fetchProductsType();
-    }, [page, searchType, searchText]);
+    }, [page, category, keyword]);
 
     const handleShowMore = () => {
         if (page < totalPage - 1) {
@@ -62,34 +77,42 @@ function Shop() {
     };
 
     const handleFetchData = (data: string) => {
-        setSearchType(data);
-        setPage(0);
+        if (keyword == "" && data !== category) {
+            setCategory(data);
+            setPage(0);
+            setProducts([]);
+        }
     };
 
-    const handleSearchText = (value: string) => {
+    const handleKeyword = (value: string) => {
         clearTimeout(searchRef.current!);
         searchRef.current = setTimeout(() => {
             setPage(0);
-            setSearchText(value);
-        }, 100);
+            setKeyword(value);
+            setCategory("");
+            setProducts([]);
+        }, 300);
     };
 
     const handleAddNewProduct = () => {
         navigate("/add-product");
     };
 
+    console.log("chi tiet products: ", products);
+
     return (
         <div>
             <div>
                 <NavbarShop
                     handleFetchData={handleFetchData}
-                    handleSearchText={handleSearchText}
+                    handleKeyword={handleKeyword}
                     handleAddNewProduct={handleAddNewProduct}
                 />
                 <div className="untree_co-section product-section before-footer-section">
                     <div className="container">
                         <div className="row">
-                            {products.length === 0 ? (
+                            {!products ||
+                            (products && products.length) === 0 ? (
                                 <h2>Không có sản phẩm.</h2>
                             ) : (
                                 <>
@@ -100,7 +123,9 @@ function Shop() {
                                                 id={item.id}
                                                 name={item.name}
                                                 price={item.price}
-                                                image={item.image}
+                                                thumbnail={item.thumbnail}
+                                                description={item.description}
+                                                categoryId={item.categoryId}
                                             />
                                         );
                                     })}

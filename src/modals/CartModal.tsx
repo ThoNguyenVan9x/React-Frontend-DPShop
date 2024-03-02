@@ -11,8 +11,10 @@ type CartItem = {
     id: number;
     name: string;
     price: number;
+    thumbnail: any;
+    description: string;
+    categoryId: number;
     qty: number;
-    image: string;
 };
 
 type Props = {
@@ -48,8 +50,8 @@ function CartModal(props: Props) {
                             <table className="table">
                                 <thead>
                                     <tr>
+                                        <th scope="col">Ảnh</th>
                                         <th scope="col">Sản phẩm</th>
-                                        <th scope="col">Mô tả</th>
                                         <th scope="col">Đơn giá</th>
                                         <th scope="col">Số lượng</th>
                                         <th scope="col">Thành tiền</th>
@@ -62,10 +64,15 @@ function CartModal(props: Props) {
                                             <tr key={item.id}>
                                                 <td className="align-middle">
                                                     <img
-                                                        src={item.image}
+                                                        src={
+                                                            item.thumbnail
+                                                                ? `http://localhost:8080/api/v1/products/images/${item.thumbnail}`
+                                                                : ""
+                                                        }
                                                         alt=""
                                                         style={{
                                                             width: "70px",
+                                                            height: "70px",
                                                         }}
                                                     />
                                                 </td>

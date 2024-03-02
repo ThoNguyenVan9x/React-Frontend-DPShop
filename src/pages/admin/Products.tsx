@@ -208,7 +208,13 @@ function Products() {
                                                     <th>Description</th>
                                                     <th>Category</th>
                                                     <th>Thumbnail</th>
-                                                    <th>Action</th>
+                                                    <th
+                                                        style={{
+                                                            textAlign: "center",
+                                                        }}
+                                                    >
+                                                        Action
+                                                    </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -255,13 +261,16 @@ function Products() {
                                                                     <img
                                                                         src={`http://localhost:8080/api/v1/products/images/${item.thumbnail}`}
                                                                         width="50px"
+                                                                        height="50px"
                                                                     />
                                                                 )}
                                                             </td>
                                                             <td>
                                                                 <div
-                                                                    className="d-flex gap-3"
+                                                                    className="d-flex gap-3 justify-content-center"
                                                                     style={{
+                                                                        paddingBottom:
+                                                                            "20px",
                                                                         cursor: "pointer",
                                                                         fontSize:
                                                                             "1.2rem",
@@ -325,9 +334,10 @@ function Products() {
                                                 <Pagination.Ellipsis />
                                             )}
                                             <Pagination.Next
-                                                onClick={() =>
-                                                    setPage(page + 1)
-                                                }
+                                                onClick={() => {
+                                                    page < totalPages - 1 &&
+                                                        setPage(page + 1);
+                                                }}
                                             />
                                             <Pagination.Last
                                                 onClick={() =>

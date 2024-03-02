@@ -35,19 +35,31 @@ function Home() {
                                 id={1}
                                 name={"Nordic Chair"}
                                 price={15000000}
-                                image={"/assets/images/product-1.png"}
+                                description="San pham demo"
+                                thumbnail={
+                                    "638c57f7-d194-4866-820b-56c2fe6a690d_product-2.png"
+                                }
+                                categoryId={1}
                             />
                             <ProductItem
                                 id={2}
                                 name={"Kruzo Aero Chair"}
                                 price={10000000}
-                                image={"/assets/images/product-2.png"}
+                                description="San pham demo"
+                                thumbnail={
+                                    "f275b284-b79a-4efa-b652-c930cacf476a_product-1.png"
+                                }
+                                categoryId={1}
                             />
                             <ProductItem
                                 id={3}
                                 name={"Ergonomic Chair"}
                                 price={25000000}
-                                image={"/assets/images/product-3.png"}
+                                description="San pham demo"
+                                thumbnail={
+                                    "41df7712-1e07-4991-b809-41c0db3a2d05_product-2.png"
+                                }
+                                categoryId={1}
                             />
                         </div>
                     </div>

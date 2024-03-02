@@ -4,14 +4,23 @@ type Props = {
     value?: any;
     width?: string;
     height?: string;
+    disable?: boolean;
     onChange?: (value: any) => void;
 };
 
-function TextField({ type, width, height, onChange, ...props }: Props) {
+function TextField({
+    type,
+    width,
+    height,
+    disable,
+    onChange,
+    ...props
+}: Props) {
     return (
         <input
             {...props}
             type={type}
+            disabled={disable}
             className={
                 type === "text" ||
                 type === "number" ||

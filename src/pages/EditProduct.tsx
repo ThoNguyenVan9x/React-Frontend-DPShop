@@ -5,67 +5,167 @@ import { FieldProduct, Product } from "../models/product.model";
 import { useNavigate, useParams } from "react-router-dom";
 import { productDetailApi } from "../services/ProductServices";
 import { toast } from "react-toastify";
+import { categoryListApi } from "../services/CategoryServices";
+
+type ProductItem = {
+    id: number;
+    name: string;
+    price: number;
+    thumbnail: any;
+    description: string;
+    categoryId: number;
+    category_name: string;
+};
+
+enum FieldProductItem {
+    Id = "id",
+    Name = "name",
+    Price = "price",
+    Thumbnail = "thumbnail",
+    Description = "description",
+    CategoryId = "categoryId",
+    CategoryName = "category_name",
+}
+
+type CategoryItem = {
+    id: number;
+    name: string;
+};
 
 function EditProduct() {
-    const [product, setProduct] = useState<Product>({});
+    const [product, setProduct] = useState<ProductItem>({} as ProductItem);
+    const [monitorImageProduct, setMonitorImageProduct] = useState<any>();
     const navigate = useNavigate();
     const { id } = useParams();
+    const [categoryList, setCategoryList] = useState<CategoryItem[]>([]);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/api/products/detail/${id}`)
-            .then((res) => res.json())
-            .then((res) => {
-                console.log("data detail: ", res);
-
-                setProduct(res);
-            });
-        // let res = productDetailApi(`${id}`).then((res) => JSON.stringify(res));
-        // {
-        //     headers: {
-        //         Authorization: `Bearer ${localStorage.getItem(
-        //             "token"
-        //         )}`,
-        //     },
-        // }
-        // .then((res) => res.json())
-        // .then((res) => {
-        // console.log("detail: ", res);
-
-        // setProduct(res.json);
-        // })
+        try {
+            const fetchData = async () => {
+                let res = await fetch(
+                    `http://localhost:8080/api/v1/products/${id}`
+                )
+                    .then((res) => res.json())
+                    .then((data) => {
+                        if (data && data.id) {
+                            setProduct(data);
+                            setMonitorImageProduct(data.thumbnail);
+                        }
+                    });
+            };
+            fetchData();
+        } catch (error) {
+            console.log("error: ", error);
+        }
     }, []);
 
-    const handleChangeFieldProduct = (key: string, value: string) => {
+    useEffect(() => {
+        const fetchListCategory = async () => {
+            const res: any = await categoryListApi();
+
+            if (res) {
+                setCategoryList([...res]);
+            }
+        };
+        fetchListCategory();
+    }, []);
+
+    const handleChangeFieldProduct = (key: string, value: any) => {
         setProduct({
             ...product,
             [key]: value,
         });
     };
 
-    const handleEditProduct = () => {
-        if (
-            !product.name?.trim() ||
-            !product.material?.trim() ||
-            !product.size?.trim() ||
-            !product.price ||
-            !product.type?.trim() ||
-            !product.image?.trim()
-        )
-            return;
-        fetch(`http://localhost:8080/api/products/edit`, {
-            method: "PUT",
-            body: JSON.stringify(product),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        }).then((res) => {
-            if (res.ok) {
-                toast.success("Save product success!");
-                window.history.back();
-            }
-        });
+    const handleEditProduct = async () => {
+        let categoryData: any = (
+            document.getElementById("category") as HTMLSelectElement
+        ).value;
+        product.categoryId = categoryData;
+
+        // console.log("product data send request: ", product);
+        // console.log("monitor image product: ", monitorImageProduct);
+        // console.log(monitorImageProduct == product.thumbnail);
+
+        if (monitorImageProduct == product.thumbnail) {
+            product.thumbnail = "";
+        } else {
+            let thumbnailRequest = product.thumbnail[0];
+            product.thumbnail = thumbnailRequest;
+        }
+
+        let productSendRequest = {
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            category_id: product.categoryId,
+        };
+
+        console.log("productSendRequest : ", productSendRequest);
+        console.log("thumbnailRequest: ", product.thumbnail);
+
+        const formData = new FormData();
+        formData.append("image", product.thumbnail);
+        formData.append("object", JSON.stringify(productSendRequest));
+
+        try {
+            let res = await fetch(
+                `http://localhost:8080/api/v1/products/${id}`,
+                {
+                    method: "PUT",
+                    body: formData,
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            )
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data && data.id) {
+                        setProduct({} as ProductItem);
+                        // props.handleRefreshList();
+                        // props.handleClose();
+                        toast.success("Update success!");
+                        navigate(`/products/${id}`);
+                    }
+                });
+        } catch (error) {
+            console.log(error);
+            toast.error("Update failed!");
+        }
+
+        // if (
+        //     !product.name?.trim() ||
+        //     !product.material?.trim() ||
+        //     !product.size?.trim() ||
+        //     !product.price ||
+        //     !product.type?.trim()
+        // )
+        //     return;
+        // fetch(`http://localhost:8080/api/products/edit`, {
+        //     method: "PUT",
+        //     body: JSON.stringify(product),
+        //     headers: {
+        //         "Content-type": "application/json; charset=UTF-8",
+        //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //     },
+        // }).then((res) => {
+        //     if (res.ok) {
+        //         props.handleRefreshList();
+        //         toast.success("Save product success!");
+        //         props.handleClose();
+        //     }
+        // });
     };
+
+    const previewImage = () => {
+        return (
+            <img src={URL.createObjectURL(product.thumbnail[0])} width="100%" />
+        );
+    };
+
     return (
         <div>
             <div className="container mt-4 mb-5">
@@ -109,13 +209,14 @@ function EditProduct() {
                                             </span>
                                         </label>
                                         <TextField
-                                            value={product.material}
-                                            onChange={(e) =>
-                                                handleChangeFieldProduct(
-                                                    FieldProduct.Material,
-                                                    e
-                                                )
-                                            }
+                                            disable
+                                            // value={product.description}
+                                            // onChange={(e) =>
+                                            //     handleChangeFieldProduct(
+                                            //         FieldProduct.Material,
+                                            //         e
+                                            //     )
+                                            // }
                                         />
                                     </div>
                                 </div>
@@ -131,13 +232,14 @@ function EditProduct() {
                                             </span>
                                         </label>
                                         <TextField
-                                            value={product.size}
-                                            onChange={(e) =>
-                                                handleChangeFieldProduct(
-                                                    FieldProduct.Size,
-                                                    e
-                                                )
-                                            }
+                                            disable
+                                            // value={product.size}
+                                            // onChange={(e) =>
+                                            //     handleChangeFieldProduct(
+                                            //         FieldProduct.Size,
+                                            //         e
+                                            //     )
+                                            // }
                                         />
                                     </div>
                                 </div>
@@ -173,9 +275,9 @@ function EditProduct() {
                                         <span className="text-danger">*</span>
                                     </label>
                                     <select
-                                        id="c_country"
+                                        id="category"
                                         className="form-control"
-                                        value={product.type}
+                                        value={product.categoryId}
                                         onChange={(e) =>
                                             handleChangeFieldProduct(
                                                 FieldProduct.Type,
@@ -186,11 +288,20 @@ function EditProduct() {
                                         <option value="">
                                             -- Chọn phân loại --
                                         </option>
-                                        <option value={"SOFA"}>Sofa</option>
-                                        <option value={"TABLE"}>Bàn</option>
-                                        <option value={"CHAIR"}>Ghế</option>
-                                        <option value={"BED"}>Giường</option>
-                                        <option value={"CABINET"}>Tủ</option>
+                                        {categoryList.map((item) => {
+                                            return (
+                                                <option
+                                                    key={item.id}
+                                                    value={item.id}
+                                                    selected={
+                                                        item.name ==
+                                                        product.category_name
+                                                    }
+                                                >
+                                                    {item.name}
+                                                </option>
+                                            );
+                                        })}
                                     </select>
                                 </div>
                             </div>
@@ -207,13 +318,14 @@ function EditProduct() {
                                             </span>
                                         </label>
                                         <TextField
-                                            value={product.discount}
-                                            onChange={(e) =>
-                                                handleChangeFieldProduct(
-                                                    FieldProduct.Discount,
-                                                    e
-                                                )
-                                            }
+                                            disable
+                                            // value={product.discount}
+                                            // onChange={(e) =>
+                                            //     handleChangeFieldProduct(
+                                            //         FieldProduct.Discount,
+                                            //         e
+                                            //     )
+                                            // }
                                         />
                                     </div>
                                 </div>
@@ -229,13 +341,14 @@ function EditProduct() {
                                             </span>
                                         </label>
                                         <TextField
-                                            value={product.countInStock}
-                                            onChange={(e) =>
-                                                handleChangeFieldProduct(
-                                                    FieldProduct.CountInStock,
-                                                    e
-                                                )
-                                            }
+                                            disable
+                                            // value={product.countInStock}
+                                            // onChange={(e) =>
+                                            //     handleChangeFieldProduct(
+                                            //         FieldProduct.CountInStock,
+                                            //         e
+                                            //     )
+                                            // }
                                         />
                                     </div>
                                 </div>
@@ -251,11 +364,35 @@ function EditProduct() {
                                             </span>
                                         </label>
                                         <TextField
+                                            disable
                                             type="number"
-                                            value={product.rating}
+                                            // value={product.rating}
+                                            // onChange={(e) =>
+                                            //     handleChangeFieldProduct(
+                                            //         FieldProduct.Rating,
+                                            //         e
+                                            //     )
+                                            // }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group row mb-3">
+                                    <div className="col-md-12">
+                                        <label
+                                            htmlFor="c_companyname"
+                                            className="text-black"
+                                        >
+                                            Description{" "}
+                                            <span className="text-danger">
+                                                *
+                                            </span>
+                                        </label>
+                                        <TextField
+                                            type="text"
+                                            value={product.description}
                                             onChange={(e) =>
                                                 handleChangeFieldProduct(
-                                                    FieldProduct.Rating,
+                                                    FieldProductItem.Description,
                                                     e
                                                 )
                                             }
@@ -273,38 +410,50 @@ function EditProduct() {
                                                 *
                                             </span>
                                         </label>
-                                        <TextField
+                                        <input
                                             type="file"
-                                            // onChange={(e) =>
-                                            //     handleChangeFieldProduct(
-                                            //         FieldProduct.Image,
-                                            //         e
-                                            //     )
-                                            // }
+                                            accept="image/*"
+                                            onChange={(e) =>
+                                                handleChangeFieldProduct(
+                                                    FieldProductItem.Thumbnail,
+                                                    e.target.files
+                                                )
+                                            }
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <img src={product.image} className="w-50 p-5" />
+                        <div className="w-50">
+                            {monitorImageProduct == product.thumbnail
+                                ? product.thumbnail && (
+                                      <img
+                                          src={`http://localhost:8080/api/v1/products/images/${product.thumbnail}`}
+                                          width="100%"
+                                      />
+                                  )
+                                : product.thumbnail &&
+                                  product.thumbnail[0] &&
+                                  previewImage()}
+                        </div>
                     </div>
                     <div className="" style={{ display: "flex", gap: "10px" }}>
                         <ButtonField
                             color="black"
-                            onClick={() => window.history.back()}
+                            onClick={() => navigate(`/products/${id}`)}
                         >
                             Quay lại
                         </ButtonField>
                         <ButtonField
                             onClick={handleEditProduct}
-                            disabled={
-                                !product.name?.trim() ||
-                                !product.material?.trim() ||
-                                !product.size?.trim() ||
-                                !product.price ||
-                                !product.type?.trim()
-                                // !product.image?.trim()
-                            }
+                            // disabled={
+                            //     !product.name?.trim() ||
+                            //     !product.material?.trim() ||
+                            //     !product.size?.trim() ||
+                            //     !product.price ||
+                            //     !product.type?.trim()
+                            //     // !product.image?.trim()
+                            // }
                         >
                             Cập nhật
                         </ButtonField>

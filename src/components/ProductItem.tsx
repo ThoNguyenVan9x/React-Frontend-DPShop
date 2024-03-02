@@ -9,7 +9,9 @@ type Props = {
     id: number;
     name: string;
     price: number;
-    image: string;
+    thumbnail: any;
+    description: string;
+    categoryId: number;
 };
 
 function ProductItem(props: Props) {
@@ -27,8 +29,13 @@ function ProductItem(props: Props) {
                     // href="#"
                 >
                     <img
-                        src={props.image}
+                        src={
+                            props.thumbnail
+                                ? `http://localhost:8080/api/v1/products/images/${props.thumbnail}`
+                                : ""
+                        }
                         className="img-fluid product-thumbnail"
+                        alt={`Image ${props.id}`}
                     />
                     <h3 className="product-title">{props.name}</h3>
                     <strong className="product-price">

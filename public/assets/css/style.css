@@ -277,6 +277,9 @@ a.more {
     margin-bottom: 30px;
     position: relative;
     top: 0;
+    object-fit: cover;
+    width: 261px;
+    height: 261px;
     -webkit-transition: 0.3s all ease;
     -o-transition: 0.3s all ease;
     transition: 0.3s all ease;

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LogoutModal from "../../modals/LogoutModal";
 
 function Sidbar() {
     const navigate = useNavigate();
     const path = window.location.pathname;
+    const [isShowLogoutModal, setIsShowLogoutModal] = useState(false);
+
+    const handleShowLogoutModal = () => {
+        setIsShowLogoutModal(true);
+    };
+    const handleCloseLogoutModal = () => {
+        setIsShowLogoutModal(false);
+    };
 
     return (
         <>
@@ -29,9 +38,10 @@ function Sidbar() {
                         onClick={() => navigate("/admin")}
                     >
                         <i
-                            className="fa-solid fa-user"
+                            className="fa-solid fa-user-tie"
                             style={{ fontSize: "17px" }}
                         ></i>
+
                         <span style={{ fontSize: "17px" }}> Admin</span>
                     </a>
                 </li>
@@ -47,9 +57,10 @@ function Sidbar() {
                         onClick={() => navigate("/admin/products")}
                     >
                         <i
-                            className="fa-solid fa-user"
+                            className="fa-brands fa-product-hunt"
                             style={{ fontSize: "17px" }}
                         ></i>
+
                         <span style={{ fontSize: "17px" }}> Products</span>
                     </a>
                 </li>
@@ -65,9 +76,10 @@ function Sidbar() {
                         onClick={() => navigate("/admin/orders")}
                     >
                         <i
-                            className="fa-solid fa-user"
+                            className="fa-solid fa-border-all"
                             style={{ fontSize: "17px" }}
                         ></i>
+
                         <span style={{ fontSize: "17px" }}> Orders</span>
                     </a>
                 </li>
@@ -83,9 +95,10 @@ function Sidbar() {
                         onClick={() => navigate("/admin/accounts")}
                     >
                         <i
-                            className="fa-solid fa-user"
+                            className="fa-solid fa-users"
                             style={{ fontSize: "17px" }}
                         ></i>
+
                         <span style={{ fontSize: "17px" }}> Accounts</span>
                     </a>
                 </li>
@@ -93,13 +106,33 @@ function Sidbar() {
                 <li className="nav-item">
                     <a className="nav-link" href="#">
                         <i
-                            className="fa-solid fa-user"
+                            className="fa-regular fa-chart-bar"
                             style={{ fontSize: "17px" }}
                         ></i>
+
                         <span style={{ fontSize: "17px" }}> Charts</span>
                     </a>
                 </li>
+                <hr className="sidebar-divider"></hr>
+                <li className="nav-item">
+                    <a
+                        className="nav-link"
+                        href="#"
+                        onClick={() => handleShowLogoutModal()}
+                    >
+                        <i
+                            className="fa-solid fa-right-from-bracket"
+                            style={{ fontSize: "25px" }}
+                        ></i>
+
+                        <span style={{ fontSize: "25px" }}> Logout</span>
+                    </a>
+                </li>
             </ul>
+            <LogoutModal
+                handleShow={() => isShowLogoutModal}
+                handleClose={handleCloseLogoutModal}
+            />
             {/* End of Sidebar */}
         </>
     );

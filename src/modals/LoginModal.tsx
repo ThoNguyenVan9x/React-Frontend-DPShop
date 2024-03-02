@@ -46,8 +46,8 @@ function LoginModal(props: Props) {
                 res.user.id,
                 res.user.fullName,
                 res.user.phoneNumber,
-                res.user.dateOfBirth,
                 res.user.address,
+                res.user.dateOfBirth,
                 res.user.role,
                 res.token
             );
