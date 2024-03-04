@@ -158,21 +158,25 @@ function LoginModal(props: Props) {
                             <div className="p-2"></div>
                             <hr />
                             <div className="p-2"></div>
-                            <button
-                                type="button"
-                                style={{ width: "100%" }}
-                                className="btn btn-black"
-                            >
-                                Login with Google
-                            </button>
+                            <a href="http://localhost:8080/oauth2/authorization/github">
+                                <button
+                                    type="button"
+                                    style={{ width: "100%" }}
+                                    className="btn btn-black"
+                                >
+                                    Login with Github
+                                </button>
+                            </a>
                             <div className="p-2"></div>
-                            <button
-                                type="button"
-                                style={{ width: "100%" }}
-                                className="btn btn-secondary"
-                            >
-                                Login with Facebook
-                            </button>
+                            <a href="http://localhost:8080/oauth2/authorization/google">
+                                <button
+                                    type="button"
+                                    style={{ width: "100%" }}
+                                    className="btn btn-secondary"
+                                >
+                                    Login with Google
+                                </button>
+                            </a>
                             <div className="p-3"></div>
                         </div>
                     </div>

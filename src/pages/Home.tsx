@@ -37,7 +37,7 @@ function Home() {
                                 price={15000000}
                                 description="San pham demo"
                                 thumbnail={
-                                    "638c57f7-d194-4866-820b-56c2fe6a690d_product-2.png"
+                                    "4218d713-2784-4500-bdbd-1147b3028f7b_product-2.png"
                                 }
                                 categoryId={1}
                             />
@@ -47,7 +47,7 @@ function Home() {
                                 price={10000000}
                                 description="San pham demo"
                                 thumbnail={
-                                    "f275b284-b79a-4efa-b652-c930cacf476a_product-1.png"
+                                    "68298720-b7dc-4435-abd4-4271f5d5c661_product-1.png"
                                 }
                                 categoryId={1}
                             />
@@ -57,7 +57,7 @@ function Home() {
                                 price={25000000}
                                 description="San pham demo"
                                 thumbnail={
-                                    "41df7712-1e07-4991-b809-41c0db3a2d05_product-2.png"
+                                    "2e91b1ab-6a61-478f-acd0-401044428612_product-3.png"
                                 }
                                 categoryId={1}
                             />

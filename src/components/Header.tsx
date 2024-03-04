@@ -159,7 +159,8 @@ function Header() {
                             </li>
                         </ul>
                         <ul className="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                            {user && user.role ? (
+                            {decoded.role === "ROLE_ADMIN" ||
+                            decoded.role === "ROLE_CUSTOMER" ? (
                                 <li
                                     style={{ cursor: "pointer" }}
                                     onClick={handleShowLogoutModal}
@@ -172,7 +173,7 @@ function Header() {
                                         }}
                                     >
                                         <i className="fa-solid fa-arrow-right-from-bracket"></i>{" "}
-                                        Logout
+                                        {localStorage.getItem("fullName")}{" "}
                                     </span>
                                 </li>
                             ) : (

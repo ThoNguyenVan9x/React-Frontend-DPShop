@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { productListApi } from "../services/ProductServices";
 import { categoryListApi } from "../services/CategoryServices";
+import { Carousel } from "react-bootstrap";
+import MyCarousel from "../components/MyCarousel";
 
 type ProductType = {
     id: number;
@@ -91,7 +93,7 @@ function Shop() {
             setKeyword(value);
             setCategory("");
             setProducts([]);
-        }, 300);
+        }, 500);
     };
 
     const handleAddNewProduct = () => {
@@ -108,6 +110,9 @@ function Shop() {
                     handleKeyword={handleKeyword}
                     handleAddNewProduct={handleAddNewProduct}
                 />
+                <div>
+                    <MyCarousel />
+                </div>
                 <div className="untree_co-section product-section before-footer-section">
                     <div className="container">
                         <div className="row">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../../components/admin/Navbar";
 import Sidbar from "../../components/admin/Sidebar";
 import TextField from "../../components/TextField";
@@ -38,6 +38,7 @@ function Orders() {
     const [limit, setLimit] = useState<number>(7);
     const [totalPages, setTotalPages] = useState<number>(0);
     const [keyword, setKeyword] = useState<string>("");
+    const searchRef = useRef<any>(null);
 
     const [refreshList, setRefreshList] = useState(false);
 
@@ -56,6 +57,14 @@ function Orders() {
         };
         fetchListProduct();
     }, [keyword, limit, page, refreshList]);
+
+    const handleSearchKeyword = (value: string) => {
+        clearTimeout(searchRef.current!);
+        searchRef.current = setTimeout(() => {
+            setPage(0);
+            setKeyword(value);
+        }, 500);
+    };
 
     const displayedPages = [];
     const itemsPerPage = 5; // Number of displayed page numbers
@@ -86,7 +95,7 @@ function Orders() {
                                     <div className="form-group">
                                         <TextField
                                             placeholder="Nhập để tìm kiếm..."
-                                            // onChange={handleSearchKeyword}
+                                            onChange={handleSearchKeyword}
                                             height="40px"
                                             width="300px"
                                         />

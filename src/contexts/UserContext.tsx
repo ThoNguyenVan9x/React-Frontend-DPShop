@@ -56,6 +56,7 @@ const UserContextProvider = ({ children }: UserContextProviderProps) => {
         localStorage.removeItem("address");
         localStorage.removeItem("role");
         localStorage.removeItem("token");
+        localStorage.removeItem("shopping_cart");
         setUser((user) => ({} as User));
     };
 

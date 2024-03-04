@@ -263,7 +263,7 @@ a.more {
 }
 
 .product-section {
-    padding: 7rem 0;
+    padding: 4rem 0;
 }
 .product-section .product-item {
     text-align: center;
@@ -640,7 +640,7 @@ a.more {
 }
 
 .before-footer-section {
-    padding: 7rem 0 12rem 0 !important;
+    padding: 4rem 0 12rem 0 !important;
 }
 
 .blog-section {
@@ -795,7 +795,7 @@ a.more {
 }
 
 .untree_co-section {
-    padding: 7rem 0;
+    padding: 4rem 0;
 }
 
 .form-control {
@@ -907,4 +907,9 @@ textarea {
     height: 50px;
     border-radius: 50%;
     background: rgba(59, 93, 80, 0.2);
+}
+
+.img-hero-shop {
+    height: 300px;
+    object-fit: cover;
 }

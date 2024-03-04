@@ -22,6 +22,7 @@ import Products from "../pages/admin/Products";
 import Orders from "../pages/admin/Orders";
 import Accounts from "../pages/admin/Accounts";
 import { jwtDecode } from "jwt-decode";
+import Social from "../pages/Social";
 
 function AppRoutes() {
     const { user } = useContext(UserContext);
@@ -47,6 +48,10 @@ function AppRoutes() {
                 <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/thankyou" element={<Thankyou />} />
                 <Route path="/order-success" element={<OrderSuccess />} />
+                <Route
+                    path="token/:token?/fullName/:fullName?"
+                    element={<Social />}
+                />
 
                 {decoded.role !== "ROLE_ADMIN" &&
                 (path.includes("/add-product") ||

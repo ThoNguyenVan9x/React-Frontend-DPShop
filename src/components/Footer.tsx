@@ -155,12 +155,7 @@ function Footer() {
                             <div className="col-lg-6">
                                 <p className="mb-2 text-center text-lg-start">
                                     Copyright © . All Rights Reserved. —
-                                    Designed with love by
-                                    <a href="https://untree.co">Untree.co</a>
-                                    Distributed By
-                                    <a href="https://themewagon.com">
-                                        ThemeWagon
-                                    </a>
+                                    Designed with love by DP-Shop
                                     {/* License information: https://untree.co/license/ */}
                                 </p>
                             </div>
